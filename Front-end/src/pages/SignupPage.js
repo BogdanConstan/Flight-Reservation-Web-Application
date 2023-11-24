@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from 'axios'
 import {
   Container,
   Typography,
@@ -17,10 +18,30 @@ const SignupPage = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
 
-  const handleSignup = (event) => {
+  const handleSignup = async (event) => {
     event.preventDefault();
-    // Placeholder for signup logic
-    alert(`Signup attempted for username: ${username}`);
+    // // Placeholder for signup logic
+    // alert(`Signup attempted for username: ${username}`);
+
+    try {
+      // Make a signup request to the backend
+      const response = await axios.post("http://localhost:8080/api/users", {
+        username,
+        password,
+        firstName,
+        lastName,
+        email,
+      });
+
+      // Handle the response as needed
+      console.log("Signup successful:", response.data);
+      // You can also redirect the user to another page or perform other actions on success
+
+    } catch (error) {
+      // Handle errors
+      console.error("Signup failed:", error.response.data);
+      // You can display an error message to the user or perform other actions on failure
+    }
   };
 
   return (
