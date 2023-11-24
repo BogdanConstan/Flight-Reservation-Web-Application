@@ -6,7 +6,9 @@ import {
   Button,
   Box,
   Grid,
+  Link,
 } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -60,6 +62,13 @@ const LoginPage = () => {
           >
             Login
           </Button>
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link component={RouterLink} to="/signup" variant="body2">
+                Create User
+              </Link>
+            </Grid>
+          </Grid>
         </Box>
       </Container>
 
