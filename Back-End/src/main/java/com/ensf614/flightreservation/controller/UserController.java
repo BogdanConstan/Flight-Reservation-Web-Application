@@ -27,13 +27,14 @@ public class UserController {
 	}
 	
 	// Get user by ID.
-	@GetMapping("/{id}")
+	@GetMapping("/id/{id}")
 	public ResponseEntity<User> getUserById(@PathVariable Long id) {
 		Optional<User> user = userRepository.findById(id);
 		return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 	
 	// Get user by username.
+	@GetMapping("/username/{username}")
 	public ResponseEntity<User> getUserByUserName(@PathVariable String username) {
 		Optional<User> user = userRepository.findByUsername(username);
 		return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -46,7 +47,7 @@ public class UserController {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 	
-	// Update an existing user
+	// Update an existing user by id.
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
         if (!userRepository.existsById(id)) {
