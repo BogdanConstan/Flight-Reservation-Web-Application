@@ -1,0 +1,15 @@
+/* styles/header.css */
+.header-nav {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-nav .navbar-brand {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.header-nav .nav-link {
+  font-size: 1.2rem;
+}
+
+/* Add more custom styles as needed */
