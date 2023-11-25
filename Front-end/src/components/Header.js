@@ -14,8 +14,6 @@ import { Link } from "react-router-dom";
 const Header = () => {
   return (
     <AppBar position="static" style={{ background: "#123456" }}>
-      {" "}
-      {/* Example color */}
       <Container>
         <Toolbar>
           <IconButton
@@ -48,6 +46,11 @@ const Header = () => {
 
           <Button color="inherit" component={Link} to="/login">
             Login
+          </Button>
+
+          {/* Admin Login Button */}
+          <Button color="inherit" component={Link} to="/admin-login">
+            Admin Login
           </Button>
           {/* Additional navigation items can be added here */}
         </Toolbar>
