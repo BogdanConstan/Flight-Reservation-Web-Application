@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios'
 import {
   Container,
   Typography,
@@ -12,63 +13,124 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const AdminManageDestinations = () => {
+
   const navigate = useNavigate();
-  const [arrivalLocations, setArrivalLocations] = useState([
-    "New York",
-    "London",
-    "Tokyo",
+
+  // State for existing locations.
+  const [locations, setLocations] = useState([
+
   ]); // Placeholder for arrival locations
-  const [destinationLocations, setDestinationLocations] = useState([
-    "Paris",
-    "Sydney",
-    "Dubai",
-  ]); // Placeholder for destination locations
-  const [newLocation, setNewLocation] = useState("");
-  const [locationType, setLocationType] = useState("arrival"); // Can be 'arrival' or 'destination'
 
-  const handleRemoveLocation = (location, type) => {
-    console.log(`Remove ${type} location: ${location}`);
-    // Logic for removing a location
-    if (type === "arrival") {
-      setArrivalLocations(arrivalLocations.filter((loc) => loc !== location));
-    } else {
-      setDestinationLocations(
-        destinationLocations.filter((loc) => loc !== location)
-      );
-    }
-  };
+  // State for new location input fields.
+  const [newLocationCity, setNewLocationCity] = useState("");
+  const [newLocationProvince, setNewLocationProvince] = useState("");
+  const [newLocationCountry, setNewLocationCountry] = useState("");
 
-  const handleAddLocation = () => {
-    console.log(`Add ${locationType} location: ${newLocation}`);
-    // Logic for adding a location
-    if (locationType === "arrival" && newLocation) {
-      setArrivalLocations([...arrivalLocations, newLocation]);
-    } else if (locationType === "destination" && newLocation) {
-      setDestinationLocations([...destinationLocations, newLocation]);
-    }
-    setNewLocation("");
-  };
+    // Fetch existing locations from the backend on component mount
+    useEffect(() => {
+      const fetchLocations = async () => {
+        try {
+          const response = await axios.get('http://localhost:8080/location');
+          if (response.status === 200) {
+            // If successful, update the state with existing locations
+            const existingLocations = response.data.locations.map(location => {
+              const { city, province_state, country } = location;
+              return `${city}, ${province_state}, ${country}`;
+            });
+            setLocations(existingLocations);
+          } else {
+            // Log an error if the request is not successful
+            console.error('Error fetching locations:', response.statusText);
+          }
+        } catch (error) {
+          // Log an error if there is an exception during the request
+          console.error('Error fetching locations:', error.message);
+        }
+      };
+  
+      fetchLocations();
+    }, []); // The empty dependency array ensures that this effect runs only once on component mount
+  
+  
+    // Function to handle the removal of a location
+    const handleRemoveLocation = async (location) => {
+      try {
+        // Extract city, province_state, and country from the location string
+        const [city, province_state, country] = location.split(', ');
+    
+        // Make a DELETE request to the backend to remove the location
+        const response = await axios.delete('http://localhost:8080/location', {
+          params: { city, province_state, country }, // Pass parameters in the params object
+        });
+    
+        if (response.status === 200) {
+          // If successful, update the state by filtering out the removed location
+          setLocations(locations.filter((loc) => loc !== location));
+        } else {
+          // Log an error if the request is not successful
+          console.error('Error removing location:', response.statusText);
+        }
+      } catch (error) {
+        // Log an error if there is an exception during the request
+        console.error('Error removing location:', error.message);
+      }
+    };
 
+    // Function to handle the addition of a new location
+    const handleAddLocation = async () => {
+      try {
+        // Make a POST request to the backend to add a new location
+        const response = await axios.post('http://localhost:8080/location', {
+          city: newLocationCity,
+          province_state: newLocationProvince,
+          country: newLocationCountry,
+        });
+    
+        if (response.status === 201) {
+          // If successful, extract relevant properties from the saved location
+          const savedLocation = response.data.location;
+          const { city, province_state, country } = savedLocation;
+    
+          // Update the state with the new location
+          setLocations([...locations, `${city}, ${province_state}, ${country}`]);
+    
+          // Reset the input fields
+          setNewLocationCity('');
+          setNewLocationProvince('');
+          setNewLocationCountry('');
+        } else {
+          // Log an error if the request is not successful
+          console.error('Error adding location:', response.statusText);
+        }
+      } catch (error) {
+        // Log an error if there is an exception during the request
+        console.error('Error adding location:', error.message);
+      }
+    };
+
+  // Function to navigate back to the dashboard.
   const goBackToDashboard = () => {
     navigate("/admin-dashboard");
   };
 
-  return (
+   // Render the component
+   return (
     <Container maxWidth="lg">
+      {/* Title */}
       <Typography variant="h4" sx={{ mt: 4, mb: 4 }}>
         Manage Destinations
       </Typography>
 
-      {/* Arrival Locations */}
-      <Typography variant="h6">Arrival Locations</Typography>
+      {/* Locations List */}
       <List>
-        {arrivalLocations.map((location, index) => (
+        {locations.map((location, index) => (
+          // Render each location with a remove button
           <ListItem
             key={index}
             secondaryAction={
               <Button
                 color="secondary"
-                onClick={() => handleRemoveLocation(location, "arrival")}
+                onClick={() => handleRemoveLocation(location)}
               >
                 Remove
               </Button>
@@ -79,52 +141,34 @@ const AdminManageDestinations = () => {
         ))}
       </List>
 
-      {/* Destination Locations */}
-      <Typography variant="h6" sx={{ mt: 4 }}>
-        Destination Locations
-      </Typography>
-      <List>
-        {destinationLocations.map((location, index) => (
-          <ListItem
-            key={index}
-            secondaryAction={
-              <Button
-                color="secondary"
-                onClick={() => handleRemoveLocation(location, "destination")}
-              >
-                Remove
-              </Button>
-            }
-          >
-            <ListItemText primary={location} />
-          </ListItem>
-        ))}
-      </List>
-
-      {/* Add Location */}
+      {/* Add Location Form */}
       <Box sx={{ mt: 4 }}>
         <TextField
-          select
-          label="Location Type"
-          value={locationType}
-          onChange={(e) => setLocationType(e.target.value)}
-          sx={{ width: 150, mr: 2 }}
-        >
-          <option value="arrival">Arrival</option>
-          <option value="destination">Destination</option>
-        </TextField>
-        <TextField
-          label="New Location"
-          value={newLocation}
-          onChange={(e) => setNewLocation(e.target.value)}
+          label="City"
+          value={newLocationCity}
+          onChange={(e) => setNewLocationCity(e.target.value)}
           sx={{ mr: 2 }}
         />
+        <TextField
+          label="Province/State"
+          value={newLocationProvince}
+          onChange={(e) => setNewLocationProvince(e.target.value)}
+          sx={{ mr: 2 }}
+        />
+        <TextField
+          label="Country"
+          value={newLocationCountry}
+          onChange={(e) => setNewLocationCountry(e.target.value)}
+          sx={{ mr: 2 }}
+        />
+        {/* Button to add a new location */}
         <Button variant="contained" onClick={handleAddLocation}>
           Add Location
         </Button>
       </Box>
 
       {/* Back to Dashboard Button */}
+      {/* Button to navigate back to the dashboard */}
       <Button
         variant="contained"
         color="primary"
