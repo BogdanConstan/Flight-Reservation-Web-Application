@@ -1,39 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Typography,
   Button,
   Box,
-  List,
-  ListItem,
-  ListItemText,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
   TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AdminManageAircraft = () => {
   const navigate = useNavigate();
-  const [aircrafts, setAircrafts] = useState([
-    "Boeing 737",
-    "Airbus A320",
-    "Embraer E190",
-  ]); // Placeholder aircraft data
-  const [newAircraft, setNewAircraft] = useState("");
+  const [aircrafts, setAircrafts] = useState([]);
+  const [newAircraft, setNewAircraft] = useState({
+    name: "",
+    numRows: 0,
+    numCols: 0,
+  });
 
-  const handleRemoveAircraft = (aircraft) => {
-    console.log(`Remove aircraft: ${aircraft}`);
-    // Placeholder logic for removing an aircraft
-    // Replace this with actual backend integration
-    setAircrafts(aircrafts.filter((ac) => ac !== aircraft));
+  useEffect(() => {
+    const fetchAircrafts = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/aircraft");
+        console.log(response.data);
+        setAircrafts(response.data);
+      } catch (error) {
+        console.error("Error fetching aircrafts:", error.response.data);
+        // Handle error as needed
+      }
+    };
+
+    fetchAircrafts();
+  }, []);
+
+  const handleRemoveAircraft = async (aircraft) => {
+    try {
+      await axios.delete(`http://localhost:8080/aircraft/${aircraft.id}`);
+      setAircrafts(aircrafts.filter((ac) => ac.id !== aircraft.id));
+    } catch (error) {
+      console.error("Error removing aircraft:", error.response.data);
+      // Handle error as needed
+    }
   };
 
-  const handleAddAircraft = () => {
-    console.log(`Add aircraft: ${newAircraft}`);
-    // Placeholder logic for adding an aircraft
-    // Replace this with actual backend integration
-    if (newAircraft) {
-      setAircrafts([...aircrafts, newAircraft]);
-      setNewAircraft("");
+  const handleAddAircraft = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/aircraft",
+        newAircraft
+      );
+      setAircrafts([...aircrafts, response.data.aircraft]);
+      setNewAircraft({
+        name: "",
+        numRows: 0,
+        numCols: 0,
+      });
+    } catch (error) {
+      console.error("Error adding aircraft:", error.response.data);
+      // Handle error as needed
     }
   };
 
@@ -47,33 +78,45 @@ const AdminManageAircraft = () => {
         Manage Aircraft
       </Typography>
 
-      {/* List of Aircrafts */}
-      <List>
-        {aircrafts.map((aircraft, index) => (
-          <ListItem
-            key={index}
-            secondaryAction={
-              <Button
-                color="secondary"
-                onClick={() => handleRemoveAircraft(aircraft)}
-              >
-                Remove
-              </Button>
-            }
-          >
-            <ListItemText primary={aircraft} />
-          </ListItem>
-        ))}
-      </List>
+      {/* Aircraft Table */}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Aircraft ID</TableCell>
+              <TableCell>Aircraft Model</TableCell>
+              <TableCell>Assigned</TableCell>
+              <TableCell>Number of Rows</TableCell>
+              <TableCell>Number of Columns</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {aircrafts.map((aircraft) => (
+              <TableRow key={aircraft.id}>
+                <TableCell>{aircraft.id}</TableCell>
+                <TableCell>{aircraft.name}</TableCell>
+                <TableCell>{aircraft.assigned ? "Yes" : "No"}</TableCell>
+                <TableCell>{aircraft.numRows}</TableCell>
+                <TableCell>{aircraft.numCols}</TableCell>
+                <TableCell>
+                  <Button
+                    color="secondary"
+                    onClick={() => handleRemoveAircraft(aircraft)}
+                  >
+                    Remove
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-      {/* Add Aircraft */}
+      {/* Add Aircraft Form */}
       <Box sx={{ mt: 4 }}>
-        <TextField
-          label="New Aircraft Model"
-          value={newAircraft}
-          onChange={(e) => setNewAircraft(e.target.value)}
-          sx={{ mr: 2 }}
-        />
+        <Typography variant="h5">Add New Aircraft</Typography>
+        {/* ... (existing form fields) */}
         <Button variant="contained" onClick={handleAddAircraft}>
           Add Aircraft
         </Button>

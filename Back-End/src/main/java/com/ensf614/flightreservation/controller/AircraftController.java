@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin("*")
 @RestController
 public class AircraftController {
 
@@ -31,6 +33,10 @@ public class AircraftController {
     @Transactional // Enable transaction management for this method
     public ResponseEntity<?> addAircraftWithSeats(@RequestBody Aircraft newAircraft) {
         try {
+        	
+        	newAircraft.setNumRows(20);
+            newAircraft.setNumCols(6);
+
             // Save the aircraft to get its ID
             Aircraft savedAircraft = aircraftRepository.save(newAircraft);
 
@@ -120,6 +126,12 @@ public class AircraftController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+    
+    @GetMapping("/aircraft")
+    public ResponseEntity<List<Aircraft>> getAllAircrafts() {
+        List<Aircraft> aircraftList = aircraftRepository.findAll();
+        return ResponseEntity.ok(aircraftList);
     }
 }
 
