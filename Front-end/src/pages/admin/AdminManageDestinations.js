@@ -33,9 +33,9 @@ const AdminManageDestinations = () => {
           const response = await axios.get('http://localhost:8080/location');
           if (response.status === 200) {
             // If successful, update the state with existing locations
-            const existingLocations = response.data.locations.map(location => {
-              const { city, province_state, country } = location;
-              return `${city}, ${province_state}, ${country}`;
+            const existingLocations = response.data.map(location => {
+              const { city, provinceState, country } = location;
+              return `${city}, ${provinceState}, ${country}`;
             });
             setLocations(existingLocations);
           } else {
