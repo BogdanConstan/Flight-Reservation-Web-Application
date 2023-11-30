@@ -40,8 +40,8 @@ const AdminDashboard = () => {
     navigate("/admin/manage-destinations");
   };
 
-  const modifyFlights = () => {
-    navigate("/admin/modify-flights");
+  const manageFlights = () => {
+    navigate("/admin/manage-flights");
   };
 
   const printRegisteredUsers = () => {
@@ -99,11 +99,11 @@ const AdminDashboard = () => {
         {/* Future: Form for adding/removing destinations */}
       </Paper>
 
-      {/* Modify Flights */}
+      {/* Manage Flights */}
       <Paper sx={{ p: 2, mb: 2 }}>
-        <Typography variant="h6">Modify Flights Information</Typography>
-        <Button onClick={modifyFlights}>Modify Flights</Button>
-        {/* Future: Form for modifying flights */}
+        <Typography variant="h6">Manage Flights Information</Typography>
+        <Button onClick={manageFlights}>Manage Flights</Button>
+        {/* Future: Form for managing flights */}
       </Paper>
 
       {/* Print Registered Users */}

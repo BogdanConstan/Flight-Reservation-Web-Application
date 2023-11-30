@@ -36,7 +36,9 @@ public class Flight {
     	
     }
 	
-    public Flight(LocalDate departureDate) {
+    public Flight(Location origin, Location destination, LocalDate departureDate) {
+    	this.origin = origin;
+    	this.destination = destination;
         this.departureDate = departureDate;
     }
     public Long getFlightID() {

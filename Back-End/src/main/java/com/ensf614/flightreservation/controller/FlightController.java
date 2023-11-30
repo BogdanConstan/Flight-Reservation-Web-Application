@@ -22,8 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class FlightController {
 
     @Autowired
@@ -40,7 +42,7 @@ public class FlightController {
     
     @PostMapping("/flight")
     @Transactional
-    public ResponseEntity<?> addFlight(@RequestParam String cityOrigin, @RequestParam String cityDest, @RequestBody Flight newFlight) {
+    public ResponseEntity<?> addFlight(@RequestBody Flight newFlight) {
         Optional<Aircraft> availableAircraftOptional = aircraftRepository.findFirstByAssignedFalse();
         if (availableAircraftOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -69,15 +71,15 @@ public class FlightController {
         savedFlight.setAircraft(availableAircraft); // Set the assigned aircraft in the flight
         savedFlight.setCrew(availableCrew);
         
-        Location origin = locationRepository.findByCity(cityOrigin);
-        Location destination = locationRepository.findByCity(cityDest);
+        //Location origin = locationRepository.findByCity(cityOrigin);
+        //Location destination = locationRepository.findByCity(cityDest);
 
-        if (origin != null && destination != null) {
+        /*if (origin != null && destination != null) {
             savedFlight.setOrigin(origin);
             savedFlight.setDestination(destination);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Origin or Destination with city name not found");
-        }
+        }*/
         flightRepository.save(savedFlight);
 
         // Constructing response payload
@@ -85,8 +87,8 @@ public class FlightController {
         flightAircraftInfo.put("flight", savedFlight);
         flightAircraftInfo.put("aircraft", availableAircraft);
         flightAircraftInfo.put("crew", availableCrew);
-        flightAircraftInfo.put("origin", origin);
-        flightAircraftInfo.put("destination", destination);
+        //flightAircraftInfo.put("origin", origin);
+        //flightAircraftInfo.put("destination", destination);
 
         //return ResponseEntity.status(HttpStatus.CREATED).body(flightAircraftInfo);
         return ResponseEntity.ok(flightAircraftInfo);

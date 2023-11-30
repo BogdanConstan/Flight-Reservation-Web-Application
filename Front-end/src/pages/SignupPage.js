@@ -8,6 +8,7 @@ import {
   Box,
   Grid,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -17,6 +18,7 @@ const SignupPage = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -36,6 +38,7 @@ const SignupPage = () => {
       // Handle the response as needed
       console.log("Signup successful:", response.data);
       // You can also redirect the user to another page or perform other actions on success
+      navigate("/");
 
     } catch (error) {
       // Handle errors

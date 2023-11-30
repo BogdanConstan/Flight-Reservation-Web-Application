@@ -54,6 +54,12 @@ public class CrewController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    @GetMapping("/crew")
+    public ResponseEntity<List<Crew>> getAllCrews() {
+        List<Crew> crewList = crewRepository.findAll();
+        return ResponseEntity.ok(crewList);
+    }
 	
 	
 }

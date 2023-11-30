@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +55,29 @@ public class LocationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting location");
         }
     }
-
+    
     @GetMapping("/location")
+    public ResponseEntity<?> getAllLocationsWithDetails() {
+        try {
+            List<Location> locations = locationRepository.findAll();
+            List<Map<String, String>> locationDetails = new ArrayList<>();
+
+            // Convert Location entities to maps containing city, province, and country details
+            for (Location location : locations) {
+                Map<String, String> locationMap = new HashMap<>();
+                locationMap.put("city", location.getCity());
+                locationMap.put("provinceState", location.getProvince_state());
+                locationMap.put("country", location.getCountry());
+                locationDetails.add(locationMap);
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(locationDetails);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching locations");
+        }
+    }
+
+    /*@GetMapping("/location")
     public ResponseEntity<?> getAllLocations() {
         try {
             List<Location> locations = locationRepository.findAll();
@@ -66,7 +88,7 @@ public class LocationController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching locations");
         }
-    }
+    }*/
 }
 
 

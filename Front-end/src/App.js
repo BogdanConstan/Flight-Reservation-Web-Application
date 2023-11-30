@@ -12,7 +12,7 @@ import AdminBrowseAircrafts from "./pages/admin/AdminBrowseAircrafts"; // Update
 import AdminManageCrew from "./pages/admin/AdminManageCrew"; // Updated import
 import AdminManageAircraft from "./pages/admin/AdminManageAircraft"; // Updated import
 import AdminManageDestinations from "./pages/admin/AdminManageDestinations"; // Updated import
-import AdminModifyFlights from "./pages/admin/AdminModifyFlights"; // Updated import
+import AdminManageFlights from "./pages/admin/AdminManageFlights"; // Updated import
 import AdminPrintUsers from "./pages/admin/AdminPrintUsers"; // Updated import
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -42,7 +42,7 @@ function App() {
           path="/admin/manage-destinations"
           element={<AdminManageDestinations />}
         />
-        <Route path="/admin/modify-flights" element={<AdminModifyFlights />} />
+        <Route path="/admin/manage-flights" element={<AdminManageFlights />} />
         <Route path="/admin/print-users" element={<AdminPrintUsers />} />
       </Routes>
     </Router>

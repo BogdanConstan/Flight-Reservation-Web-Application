@@ -11,7 +11,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TextField,
+  //TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -84,7 +84,6 @@ const AdminManageAircraft = () => {
           <TableHead>
             <TableRow>
               <TableCell>Aircraft ID</TableCell>
-              <TableCell>Aircraft Model</TableCell>
               <TableCell>Assigned</TableCell>
               <TableCell>Number of Rows</TableCell>
               <TableCell>Number of Columns</TableCell>
@@ -95,7 +94,6 @@ const AdminManageAircraft = () => {
             {aircrafts.map((aircraft) => (
               <TableRow key={aircraft.id}>
                 <TableCell>{aircraft.id}</TableCell>
-                <TableCell>{aircraft.name}</TableCell>
                 <TableCell>{aircraft.assigned ? "Yes" : "No"}</TableCell>
                 <TableCell>{aircraft.numRows}</TableCell>
                 <TableCell>{aircraft.numCols}</TableCell>
