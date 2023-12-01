@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,10 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin("*")
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 public class FlightController {
 
     @Autowired
@@ -188,19 +188,10 @@ public class FlightController {
         }
     }
     
-    @GetMapping("/flights")
-    public ResponseEntity<?> getAllFlights() {
-        try {
-            List<Flight> flights = flightRepository.findAll();
-
-            if (!flights.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.OK).body(flights);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No flights found");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching flights");
-        }
+    @GetMapping("/flight")
+    public ResponseEntity<List<Flight>> getAllLocations() {
+        List<Flight> flightList = flightRepository.findAll();
+        return ResponseEntity.ok(flightList);
     }
     
     // Other methods...

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "locations")
 public class Location {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +24,14 @@ public class Location {
 		this.city = city;
 		this.provinceState = p_s;
 		this.country = country;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	public String getCity() {

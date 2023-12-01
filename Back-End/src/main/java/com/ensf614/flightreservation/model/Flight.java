@@ -12,15 +12,11 @@ public class Flight {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "flightid")
-	private Long ID;
-	
-    @ManyToOne
-    @JoinColumn(name = "origin") // Change the column name as per your requirements
-    private Location origin;
-    
-    @ManyToOne
-    @JoinColumn(name = "destination") // Change the column name as per your requirements
-    private Location destination;
+	private Long id;
+
+    private String origin;
+
+    private String destination;
     
 	private LocalDate departureDate;
 	
@@ -36,28 +32,32 @@ public class Flight {
     	
     }
 	
-    public Flight(Location origin, Location destination, LocalDate departureDate) {
+    public Flight(String origin, String destination, LocalDate departureDate) {
     	this.origin = origin;
     	this.destination = destination;
         this.departureDate = departureDate;
     }
-    public Long getFlightID() {
-        return ID;
+    public Long getID() {
+        return id;
     }
     
-    public Location getOrigin() {
+    public void setID(Long id) {
+    	this.id = id;
+    }
+    
+    public String getOrigin() {
         return origin;
     }
 
-    public void setOrigin(Location origin) {
+    public void setOrigin(String origin) {
         this.origin = origin;
     }
 
-    public Location getDestination() {
+    public String getDestination() {
         return destination;
     }
 
-    public void setDestination(Location destination) {
+    public void setDestination(String destination) {
         this.destination = destination;
     }
 

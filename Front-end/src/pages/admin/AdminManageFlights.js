@@ -9,6 +9,13 @@ import {
   MenuItem,
   InputLabel,
   TextField,
+  Table,
+  TableContainer,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -17,21 +24,16 @@ const ManageFlights = () => {
   const navigate = useNavigate();
   const [flights, setFlights] = useState([]);
   const [locations, setLocations] = useState([]);
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
+  const [origin, setOrigin] = useState({});
+  const [destination, setDestination] = useState({});
   const [departureDate, setDepartureDate] = useState("");
 
   useEffect(() => {
     const fetchLocations = async () => {
       try {
         const response = await axios.get("http://localhost:8080/location");
-        const formattedLocations = response.data.map((location) => ({
-          city: location.city,
-          provinceState: location.provinceState,
-          country: location.country,
-        }));
-        setLocations(formattedLocations);
-        console.log("Fetched locations:", formattedLocations);
+        setLocations(response.data);
+        console.log("Fetched locations:", response.data);
       } catch (error) {
         console.error("Error fetching locations:", error);
         // Handle error as needed
@@ -39,46 +41,55 @@ const ManageFlights = () => {
     };
 
     fetchLocations();
+    fetchFlights(); // Fetch flights on initial load
   }, []);
+
+  const fetchFlights = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/flight");
+      setFlights(response.data);
+      console.log("Fetched flights:", response.data);
+    } catch (error) {
+      console.error("Error fetching flights:", error);
+      // Handle error as needed
+    }
+  };
 
   const handleAddFlight = async () => {
     try {
-      if (!origin || !destination || !departureDate) {
+      if (!origin.city || !destination.city || !departureDate) {
         alert("Please select origin, destination, and departure date.");
         return;
       }
-  
-      // Find the selected locations by filtering the locations array
-      const selectedOrigin = locations.find(loc => loc.city === origin);
-      const selectedDestination = locations.find(loc => loc.city === destination);
+
       const formattedDate = new Date(departureDate).toISOString().split('T')[0];
-  
-      if (!selectedOrigin || !selectedDestination) {
-        alert("Invalid origin or destination selected.");
-        return;
-      }
-  
+
       const newFlight = {
-        origin: origin,
-        destination: destination,
+        origin: origin.city,
+        destination: destination.city,
         departureDate: formattedDate,
         // Add other necessary fields for the new flight
       };
 
       await axios.post("http://localhost:8080/flight", newFlight);
-
-      // Optionally, you might want to fetch updated flights after adding a new one
-      const response = await axios.get("http://localhost:8080/flights");
-      setFlights(response.data);
+      fetchFlights(); // Fetch updated flights after adding a new one
 
       // Clear input fields after adding the flight
-      setOrigin("");
-      setDestination("");
+      setOrigin({});
+      setDestination({});
       setDepartureDate("");
-
-      // Optionally, you might want to display a success message or update the UI
     } catch (error) {
       console.error("Error adding flight:", error);
+      // Handle error as needed
+    }
+  };
+
+  const handleRemoveFlight = async (flightId) => {
+    try {
+      await axios.delete(`http://localhost:8080/flight/${flightId}`);
+      fetchFlights(); // Fetch updated flights after deleting one
+    } catch (error) {
+      console.error("Error removing flight:", error);
       // Handle error as needed
     }
   };
@@ -96,23 +107,26 @@ const ManageFlights = () => {
       <Box sx={{ mb: 4 }}>
         <FormControl sx={{ minWidth: 200, mr: 2 }}>
           <InputLabel>Origin</InputLabel>
-          <Select value={origin} onChange={(e) => setOrigin(e.target.value)}>
+          <Select value={origin.city || ''} onChange={(e) => {
+            const selectedLocation = locations.find(loc => loc.city === e.target.value);
+            setOrigin(selectedLocation || {});
+          }}>
             {locations.map((location, index) => (
               <MenuItem key={index} value={location.city}>
-                {`${location.city}, ${location.provinceState}, ${location.country}`}
+                {location.city}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
         <FormControl sx={{ minWidth: 200, mr: 2 }}>
           <InputLabel>Destination</InputLabel>
-          <Select
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-          >
+          <Select value={destination.city || ''} onChange={(e) => {
+            const selectedLocation = locations.find(loc => loc.city === e.target.value);
+            setDestination(selectedLocation || {});
+          }}>
             {locations.map((location, index) => (
               <MenuItem key={index} value={location.city}>
-                {`${location.city}, ${location.provinceState}, ${location.country}`}
+                {location.city}
               </MenuItem>
             ))}
           </Select>
@@ -129,7 +143,38 @@ const ManageFlights = () => {
       </Box>
 
       {/* Table to display flights */}
-      {/* Code for displaying flights in a table */}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Origin</TableCell>
+              <TableCell>Destination</TableCell>
+              <TableCell>Departure Date</TableCell>
+              <TableCell>Actions</TableCell> {/* New table header for actions */}
+              {/* Add other table headers */}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {flights.map((flight) => (
+              <TableRow key={flight.id}>
+                <TableCell>{flight.origin}</TableCell>
+                <TableCell>{flight.destination}</TableCell>
+                <TableCell>{flight.departureDate}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleRemoveFlight(flight.id)}
+                  >
+                    Remove
+                  </Button>
+                </TableCell>
+                {/* Add other table cells */}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Button
         variant="contained"
@@ -144,7 +189,6 @@ const ManageFlights = () => {
 };
 
 export default ManageFlights;
-
 
 
 
