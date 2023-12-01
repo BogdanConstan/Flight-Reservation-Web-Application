@@ -6,14 +6,18 @@ import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import SignupPage from "./pages/SignupPage";
 import FlightSearch from "./pages/FlightSearch";
-import AdminBrowseFlights from "./pages/admin/AdminBrowseFlights"; // Updated import
-import AdminBrowseCrews from "./pages/admin/AdminBrowseCrews"; // Updated import
-import AdminBrowseAircrafts from "./pages/admin/AdminBrowseAircrafts"; // Updated import
-import AdminManageCrew from "./pages/admin/AdminManageCrew"; // Updated import
-import AdminManageAircraft from "./pages/admin/AdminManageAircraft"; // Updated import
-import AdminManageDestinations from "./pages/admin/AdminManageDestinations"; // Updated import
-import AdminManageFlights from "./pages/admin/AdminManageFlights"; // Updated import
-import AdminPrintUsers from "./pages/admin/AdminPrintUsers"; // Updated import
+import AdminBrowseFlights from "./pages/admin/AdminBrowseFlights";
+import FlightDetails from "./pages/FlightDetails";
+import AdminBrowseCrews from "./pages/admin/AdminBrowseCrews";
+import AdminBrowseAircrafts from "./pages/admin/AdminBrowseAircrafts";
+import AdminManageCrew from "./pages/admin/AdminManageCrew";
+import AdminManageAircraft from "./pages/admin/AdminManageAircraft";
+import AdminManageDestinations from "./pages/admin/AdminManageDestinations";
+import AdminManageFlights from "./pages/admin/AdminManageFlights";
+import AdminPrintUsers from "./pages/admin/AdminPrintUsers";
+import FlightAttendantLogin from "./pages/FlightAttendantLogin";
+import FlightAttendantDashboard from "./pages/FlightAttendantDashboard";
+import FlightAttendantBrowseFlights from "./pages/flight-attendant/FlightAttendantBrowseFlights";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -26,7 +30,8 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/flight-search" element={<FlightSearch />} />
-        {/* Updated routes for admin functionalities */}
+        <Route path="/flight-details/:flightId" element={<FlightDetails />} />
+        {/* Admin routes */}
         <Route path="/admin/browse-flights" element={<AdminBrowseFlights />} />
         <Route path="/admin/browse-crews" element={<AdminBrowseCrews />} />
         <Route
@@ -44,6 +49,19 @@ function App() {
         />
         <Route path="/admin/manage-flights" element={<AdminManageFlights />} />
         <Route path="/admin/print-users" element={<AdminPrintUsers />} />
+        {/* Flight Attendant routes */}
+        <Route
+          path="/flight-attendant-login"
+          element={<FlightAttendantLogin />}
+        />
+        <Route
+          path="/flight-attendant-dashboard"
+          element={<FlightAttendantDashboard />}
+        />
+        <Route
+          path="/flight-attendant/browse-flights"
+          element={<FlightAttendantBrowseFlights />}
+        />
       </Routes>
     </Router>
   );

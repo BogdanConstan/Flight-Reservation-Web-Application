@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Container,
   Typography,
@@ -8,20 +9,44 @@ import {
 } from "@mui/material";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const FlightSearch = () => {
-  // Example flights data (replace with real data later)
-  const flights = [
-    {
-      id: 1,
-      from: "New York",
-      to: "Los Angeles",
-      date: "2023-12-01",
-      price: "$300",
-    },
-    { id: 2, from: "Chicago", to: "Miami", date: "2023-12-05", price: "$250" },
-    // ... more example flights
-  ];
+  const location = useLocation();
+  const { fromLocation, destination, departureDate } = location.state || {};
+  console.log(fromLocation, destination, departureDate);
+  const [flights, setFlights] = useState([]);
+
+  useEffect(() => {
+    const fetchFlights = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/flights/search`,
+          {
+            params: {
+              from: fromLocation,
+              to: destination,
+              date: departureDate,
+            },
+          }
+        );
+        setFlights(response.data);
+      } catch (error) {
+        console.error("Error fetching flights:", error.response.data);
+      }
+    };
+
+    if (fromLocation && destination && departureDate) {
+      fetchFlights();
+    }
+  }, [fromLocation, destination, departureDate]);
+
+  const navigate = useNavigate();
+
+  const handleFlightClick = (flightId) => {
+    navigate(`/flight-details/${flightId}`);
+  };
 
   return (
     <div>
@@ -32,10 +57,14 @@ const FlightSearch = () => {
         </Typography>
         <List>
           {flights.map((flight) => (
-            <ListItem key={flight.id}>
+            <ListItem
+              key={flight.id}
+              button
+              onClick={() => handleFlightClick(flight.id)}
+            >
               <ListItemText
-                primary={`${flight.from} to ${flight.to}`}
-                secondary={`Date: ${flight.date}, Price: ${flight.price}`}
+                primary={`${flight.origin} to ${flight.destination}`}
+                secondary={`Date: ${flight.departureDate}, Price: ${flight.price}`}
               />
             </ListItem>
           ))}

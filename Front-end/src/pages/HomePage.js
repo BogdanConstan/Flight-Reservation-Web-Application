@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Container,
   Typography,
@@ -15,40 +15,35 @@ import {
 } from "@mui/material";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz"; // Import SwapHorizIcon
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { styled } from "@mui/material/styles";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import backgroundImage from "../pic.jpg";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  // State hooks for form inputs
   const [fromLocation, setFromLocation] = useState("");
   const [destination, setDestination] = useState("");
   const [roundTrip, setRoundTrip] = useState(false);
   const [departureDate, setDepartureDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [numberOfTickets, setNumberOfTickets] = useState(1);
+  const [locations, setLocations] = useState([]); // State for locations
   const navigate = useNavigate();
-
-  // Example options for dropdowns (replace with actual data)
-  const locations = ["New York", "Los Angeles", "Chicago", "Houston", "Miami"];
   const ticketNumbers = [1, 2, 3, 4, 5];
 
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/location");
+        setLocations(response.data);
+      } catch (error) {
+        console.error("Error fetching locations:", error.response.data);
+      }
+    };
 
-  //   if (
-  //     !fromLocation ||
-  //     !destination ||
-  //     !departureDate ||
-  //     !returnDate ||
-  //     !numberOfTickets
-  //   ) {
-  //     alert("Please fill in all required fields.");
-  //   } else {
-  //     navigate("/flight-search"); // Redirect to FlightSearch page
-  //   }
-  // };
+    fetchLocations();
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -64,7 +59,9 @@ const HomePage = () => {
         alert("From location and destination cannot be the same.");
       } else {
         // Redirect to FlightSearch for a valid round trip
-        navigate("/flight-search");
+        navigate("/flight-search", {
+          state: { fromLocation, destination, departureDate },
+        });
       }
     } else {
       // For one-way trip, only departure date is required
@@ -74,7 +71,9 @@ const HomePage = () => {
         alert("From location and destination cannot be the same.");
       } else {
         // Redirect to FlightSearch for a valid one-way trip
-        navigate("/flight-search");
+        navigate("/flight-search", {
+          state: { fromLocation, destination, departureDate },
+        });
       }
     }
   };
@@ -137,16 +136,21 @@ const HomePage = () => {
             <FlightTakeoffIcon style={{ fontSize: 60, color: "#123456" }} />
           </Grid>
           <Grid item>
-            <Typography style={headlineStyle} gutterBottom>
+            <Typography
+              style={{ fontSize: "2.5rem", fontWeight: "bold" }}
+              gutterBottom
+            >
               Welcome to Our Flight Reservation Service
             </Typography>
-            <Typography style={subtitleStyle} gutterBottom>
+            <Typography
+              style={{ fontSize: "1.5rem", fontStyle: "italic" }}
+              gutterBottom
+            >
               Find and book flights with ease.
             </Typography>
           </Grid>
         </Grid>
 
-        {/* Flight Search Form */}
         <StyledPaper>
           <Box
             component="form"
@@ -162,49 +166,40 @@ const HomePage = () => {
                   fullWidth
                   value={fromLocation}
                   onChange={(e) => setFromLocation(e.target.value)}
-                  SelectProps={{ native: true }}
-                  variant="outlined" // Ensures the text field is outlined
-                  InputLabelProps={{
-                    shrink: true, // This ensures the label shrinks when an item is selected
-                  }}
+                  variant="outlined"
                 >
                   {locations.map((location) => (
-                    <option key={location} value={location}>
-                      {location}
-                    </option>
+                    <MenuItem key={location.id} value={location.city}>
+                      {location.city}
+                    </MenuItem>
                   ))}
                 </TextField>
               </Grid>
               <Grid item xs={12} sm={1}>
-                {/* IconButton to swap locations */}
                 <IconButton
                   onClick={handleSwapLocations}
                   sx={{ alignSelf: "center" }}
                 >
-                  {/* Add an icon for swapping */}
                   <SwapHorizIcon />
                 </IconButton>
               </Grid>
               <Grid item xs={12} sm={5}>
                 <TextField
                   select
-                  label="Choose Destination"
+                  label="Destination"
                   fullWidth
                   value={destination}
-                  onChange={(e) => setDestination(e.target.value)} // not sure how to fix
-                  SelectProps={{ native: true }}
+                  onChange={(e) => setDestination(e.target.value)}
                   variant="outlined"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                 >
                   {locations.map((location) => (
-                    <option key={location} value={location}>
-                      {location}
-                    </option>
+                    <MenuItem key={location.id} value={location.city}>
+                      {location.city}
+                    </MenuItem>
                   ))}
                 </TextField>
               </Grid>
+
               <Grid item xs={12} sm={3}>
                 <TextField
                   select

@@ -9,21 +9,19 @@ import {
 } from "@mui/material";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import {
-  // ... other imports ...
-  useNavigate, // Import useNavigate from react-router-dom
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const AdminLoginPage = () => {
+const FlightAttendantLoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); // Initialize useNavigate
 
-  const handleAdminLogin = (event) => {
+  const handleFlightAttendantLogin = (event) => {
     event.preventDefault();
-    if (username === "admin" && password === "password") {
-      // Redirect to the AdminDashboard page
-      navigate("/admin-dashboard");
+    // Check if the credentials match the specified ones
+    if (username === "flightattendant" && password === "password") {
+      // Redirect to the FlightAttendantDashboard page
+      navigate("/flight-attendant-dashboard");
     } else {
       alert("Invalid credentials"); // Handle invalid credentials
     }
@@ -35,11 +33,11 @@ const AdminLoginPage = () => {
 
       <Container maxWidth="sm" sx={{ mt: 8, mb: 6 }}>
         <Typography variant="h4" gutterBottom>
-          Admin Login
+          Flight Attendant Login
         </Typography>
         <Box
           component="form"
-          onSubmit={handleAdminLogin}
+          onSubmit={handleFlightAttendantLogin}
           noValidate
           sx={{ mt: 1 }}
         >
@@ -72,7 +70,7 @@ const AdminLoginPage = () => {
             color="primary"
             sx={{ mt: 3, mb: 2 }}
           >
-            Admin Login
+            Flight Attendant Login
           </Button>
         </Box>
       </Container>
@@ -82,4 +80,4 @@ const AdminLoginPage = () => {
   );
 };
 
-export default AdminLoginPage;
+export default FlightAttendantLoginPage;

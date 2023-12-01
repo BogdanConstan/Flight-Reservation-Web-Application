@@ -44,6 +44,7 @@ const Header = () => {
             </Link>
           </Typography>
 
+          {/* Regular User Login Button */}
           <Button color="inherit" component={Link} to="/login">
             Login
           </Button>
@@ -51,6 +52,11 @@ const Header = () => {
           {/* Admin Login Button */}
           <Button color="inherit" component={Link} to="/admin-login">
             Admin Login
+          </Button>
+
+          {/* Flight Attendant Login Button */}
+          <Button color="inherit" component={Link} to="/flight-attendant-login">
+            Flight Attendant Login
           </Button>
           {/* Additional navigation items can be added here */}
         </Toolbar>
