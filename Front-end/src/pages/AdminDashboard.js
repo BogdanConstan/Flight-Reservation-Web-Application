@@ -20,8 +20,8 @@ const AdminDashboard = () => {
     navigate("/admin/browse-flights");
   };
 
-  const browseCrews = (flightNumber) => {
-    navigate("/admin/browse-crews"); // Pass flightNumber as needed
+  const browseCrews = () => {
+    navigate("/admin/browse-crews");
   };
 
   const browseAircrafts = () => {
@@ -64,7 +64,6 @@ const AdminDashboard = () => {
       {/* Browse Crews */}
       <Paper sx={{ p: 2, mb: 2 }}>
         <Typography variant="h6">Browse Crews for a Flight</Typography>
-        <TextField label="Flight Number" />
         <Button onClick={() => browseCrews("AB123")}>Browse Crews</Button>
         {/* Future: Display list of crews here */}
       </Paper>

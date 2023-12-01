@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Optional;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,9 +58,23 @@ public class CrewController {
     }
     
     @GetMapping("/crew")
-    public ResponseEntity<List<Crew>> getAllCrews() {
+    public ResponseEntity<List<Map<String, Object>>> getAllCrews() {
         List<Crew> crewList = crewRepository.findAll();
-        return ResponseEntity.ok(crewList);
+        List<Map<String, Object>> crewDataList = new ArrayList<>();
+
+        for (Crew crew : crewList) {
+            Map<String, Object> crewData = new HashMap<>();
+            crewData.put("id", crew.getId());
+            crewData.put("numCrewMembers", crew.getNumCrewMembers());
+            crewData.put("assigned", crew.getAssigned() ? "Yes" : "No");
+            
+            // Add flightid as a string, or handle null if crew.getFlight() is null
+            crewData.put("flightid", crew.getFlight() != null ? crew.getFlight().getID().toString() : "-");
+
+            crewDataList.add(crewData);
+        }
+
+        return ResponseEntity.ok(crewDataList);
     }
 	
 	
