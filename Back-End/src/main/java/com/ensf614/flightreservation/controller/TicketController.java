@@ -40,13 +40,15 @@ public class TicketController {
 	    Long flightId = ticketRequest.getFlight().getID();
 	    int seatRowNum = ticketRequest.getSeatRowNum();
 	    char seatColChar = ticketRequest.getSeatColChar();
+	    String firstName = ticketRequest.getFirstName();
+	    String lastName = ticketRequest.getLastName();
 
 	    // Retrieve the associated Flight entity
 	    Flight flight = flightRepository.findById(flightId).orElse(null);
 
 	    if (flight != null) {
 	        // Create a new Ticket using the appropriate constructor
-	        Ticket newTicket = new Ticket(flight, seatRowNum, seatColChar);
+	        Ticket newTicket = new Ticket(flight, seatRowNum, seatColChar, firstName, lastName);
 
 	        // Save the new ticket
 	        return ticketRepository.save(newTicket);
@@ -57,7 +59,7 @@ public class TicketController {
 	}
 	
 	// Delete a ticket by ID
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/ticket/{id}")
 	public void deleteTicket(@PathVariable Long id) {
 		Ticket ticket = ticketRepository.findById(id).orElse(null);
 		

@@ -18,23 +18,20 @@ public class Ticket {
 	private Flight flight;
 	
 	// Ticket related fields.
+	private String firstName;
+	private String lastName;
 	private String origin;
 	private String destination;
 	private LocalDate departureDate;
 	
 	// Seat related fields.
 	@OneToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "seat_id")
 	private Seat seat;
 	
 	private int seatRowNum;
 	private char seatColChar;
 	private String seatType;
-	public Long getId() {
-		return id;
-	}
-
-
 	private double price;
 	
 	// Default constructor.
@@ -43,8 +40,12 @@ public class Ticket {
 	}
 	
 	// Constructor for Ticket that takes in flight, seat row, and column.
-	public Ticket(Flight flight, int r, char c) {
+	public Ticket(Flight flight, int r, char c, String fn, String ln) {
 		this.flight = flight;
+		
+		// Set the first name and last name of the ticket holder.
+		this.firstName = fn;
+		this.lastName = ln;
 		
 		// Initialize the ticket-related fields using flight information.
 		this.origin = flight.getOrigin();
@@ -172,6 +173,24 @@ public class Ticket {
 	        super(message);
 	    }
 	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	
+	
 	
 	
 }
