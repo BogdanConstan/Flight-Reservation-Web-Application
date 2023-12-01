@@ -29,21 +29,22 @@ public class AircraftController {
     @Autowired
     private SeatRepository seatRepository;
 
-    @PostMapping("/aircraft") // Endpoint to add new aircraft and seats
+    @PostMapping("/aircraft") // Endpoint to add a new aircraft and seats
     @Transactional // Enable transaction management for this method
     public ResponseEntity<?> addAircraftWithSeats(@RequestBody Aircraft newAircraft) {
         try {
         	
+        	// Set the number of rows and columns representing seat allocation on the aircraft.
         	newAircraft.setNumRows(20);
             newAircraft.setNumCols(6);
 
             // Save the aircraft to get its ID
             Aircraft savedAircraft = aircraftRepository.save(newAircraft);
 
-            // Generate and add seats to the aircraft
+            // Generate and add seats to the aircraft.
             generateAndAddSeats(savedAircraft);
 
-            // Constructing response payload
+            // Construct the response payload.
             Map<String, Object> aircraftSeatInfo = new HashMap<>();
             aircraftSeatInfo.put("aircraft", savedAircraft);
             aircraftSeatInfo.put("seats", savedAircraft.getSeats()); // Retrieve and add seats to the response payload
@@ -63,7 +64,11 @@ public class AircraftController {
         return savedAircraft;
     }*/
 
-    // Method to generate and add seats to the aircraft
+    
+    /**
+     * Generate and add seats to an aircraft.
+     * @param aircraft
+     */
     private void generateAndAddSeats(Aircraft aircraft) {
         int numRows = aircraft.getNumRows();
         int numCols = aircraft.getNumCols();
