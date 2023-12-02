@@ -138,5 +138,18 @@ public class AircraftController {
         List<Aircraft> aircraftList = aircraftRepository.findAll();
         return ResponseEntity.ok(aircraftList);
     }
+    
+    @GetMapping("/aircraftId/{flightId}")
+    public ResponseEntity<Long> getAircraftIdByFlightId(@PathVariable Long flightId) {
+        Optional<Aircraft> aircraftOptional = aircraftRepository.findByFlightID(flightId);
+
+        if (aircraftOptional.isPresent()) {
+        	Aircraft aircraft = aircraftOptional.get();
+        	
+            return ResponseEntity.ok(aircraft.getId());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
 
