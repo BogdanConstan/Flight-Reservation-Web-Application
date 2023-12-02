@@ -1,33 +1,69 @@
-import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 const Confirmation = () => {
   const [email, setEmail] = useState("");
   const location = useLocation();
-  const { flightId, selectedSeats } = location.state || {}; // Retrieve flightId and selectedSeats
+  const { flightId, selectedSeatDetails, paymentInfo } = location.state || {};
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const updateSeatAvailability = async () => {
+      try {
+        // Iterate through selectedSeatDetails to update seat availability
+        for (const seat of selectedSeatDetails) {
+          await axios.put("http://localhost:8080/seatAssigned", {
+            id: seat.id, // Assuming seat.id exists in selectedSeatDetails
+          });
+        }
+      } catch (error) {
+        console.error("Error updating seat availability:", error);
+        // Handle error if needed
+      }
+    };
+
+    const generateTicket = async () => {
+      try {
+        // Iterate through selectedSeatDetails to generate tickets
+        for (const seat of selectedSeatDetails) {
+          const ticketRequest = {
+            flight: { id: flightId }, // Assuming flightId is available
+            seatRowNum: seat.rowNum,
+            seatColChar: seat.colChar,
+            firstName: paymentInfo.firstName,
+            lastName: paymentInfo.lastName,
+            // Add any other necessary details for ticket generation
+          };
+
+          await axios.post("http://localhost:8080/ticket", ticketRequest);
+        }
+      } catch (error) {
+        console.error("Error generating ticket:", error);
+        // Handle error if needed
+      }
+    };
+
+    if (selectedSeatDetails.length > 0) {
+      updateSeatAvailability();
+      generateTicket();
+    }
+  }, [flightId, selectedSeatDetails, paymentInfo]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Construct flightDetails object or string as needed
-    const flightDetails = {
-      flightId: flightId,
-      selectedSeats: selectedSeats,
-      // Add any other details if needed
-    };
-
     try {
-      console.log(JSON.stringify({ email, flightDetails }));
-      const response = await fetch("http://localhost:8080/send-receipt", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, flightDetails }),
+      const response = await axios.post("http://localhost:8080/send-receipt", {
+        email: email,
+        flightDetails: JSON.stringify({
+          flightId: flightId,
+          selectedSeatDetails: selectedSeatDetails,
+          paymentInfo: paymentInfo,
+        }),
       });
 
-      if (response.ok) {
+      if (response.data === "Receipt sent successfully") {
         setMessage("Receipt sent successfully to your email.");
       } else {
         setMessage("Failed to send receipt. Please try again.");
@@ -51,7 +87,7 @@ const Confirmation = () => {
             required
           />
         </label>
-        <button type="submit">Send Receipt</button>
+        <button type="submit">Send Receipt & Ticket</button>
       </form>
       {message && <p>{message}</p>}
     </div>

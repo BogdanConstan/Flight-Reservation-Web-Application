@@ -10,4 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SeatRepository extends JpaRepository<Seat, Long> {
 	List<Seat> findByAircraftId(Long aircraftId);
+	Seat findByAircraftIdAndRowNumAndColChar(Long aircraftId, Integer rowNum, Character colChar);
 }

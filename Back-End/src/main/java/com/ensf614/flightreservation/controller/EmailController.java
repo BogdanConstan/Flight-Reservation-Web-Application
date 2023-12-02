@@ -16,7 +16,7 @@ public class EmailController {
  private EmailService emailService;
  
  
- @CrossOrigin(origins = "http://localhost:3000")
+ @CrossOrigin("*")
  @PostMapping("/send-receipt")
  public String sendReceipt(@RequestBody ReceiptRequest receiptRequest) {
      String receiptInfo = "Flight Details: " + receiptRequest.getFlightDetails(); // Format this as needed

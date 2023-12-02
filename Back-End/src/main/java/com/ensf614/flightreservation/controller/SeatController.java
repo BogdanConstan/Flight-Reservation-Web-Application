@@ -60,6 +60,23 @@ public class SeatController {
 	    }
 	}
 	
+	@GetMapping("/seats/{aircraftId}/{rowNum}/{colChar}")
+	@Transactional
+	public ResponseEntity<Seat> getSeatByPosition(
+	    @PathVariable Long aircraftId,
+	    @PathVariable Integer rowNum,
+	    @PathVariable Character colChar
+	) {
+	    try {
+	        // Here, you can use the aircraftId, rowNumber, and columnNumber 
+	        // to retrieve the seat associated with that specific position
+	        Seat seat = seatRepository.findByAircraftIdAndRowNumAndColChar(aircraftId, rowNum, colChar);
+	        return ResponseEntity.ok(seat);
+	    } catch (Exception e) {
+	        return ResponseEntity.notFound().build();
+	    }
+	}
+	
     
 	
 	

@@ -16,7 +16,7 @@ const FlightDetails = () => {
 
   const handleProceedToPayment = () => {
     // You can pass necessary data to the payment page using state or context
-    navigate("/payment", { state: { flightId, selectedSeats } });
+    navigate("/payment", { state: { flightId, aircraftId, selectedSeats } });
   };
 
   const handleSeatClick = async (seat) => {
@@ -28,14 +28,14 @@ const FlightDetails = () => {
       setSelectedSeats(updatedSelectedSeats);
 
       // Optionally, update the backend about the seat selection
-      try {
+      /*try {
         await axios.put("http://localhost:8080/seatAssigned", {
           seatNumber: seat,
           isSelected: !isAlreadySelected,
         });
       } catch (error) {
         console.error("Error updating seat:", error);
-      }
+      }*/
     }
   };
 
