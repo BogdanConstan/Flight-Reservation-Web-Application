@@ -72,69 +72,18 @@ public class FlightController {
         savedFlight.setAircraft(availableAircraft); // Set the assigned aircraft in the flight
         savedFlight.setCrew(availableCrew);
         
-        //Location origin = locationRepository.findByCity(cityOrigin);
-        //Location destination = locationRepository.findByCity(cityDest);
 
-        /*if (origin != null && destination != null) {
-            savedFlight.setOrigin(origin);
-            savedFlight.setDestination(destination);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Origin or Destination with city name not found");
-        }*/
         flightRepository.save(savedFlight);
 
-        // Constructing response payload
         Map<String, Object> flightAircraftInfo = new HashMap<>();
         flightAircraftInfo.put("flight", savedFlight);
         flightAircraftInfo.put("aircraft", availableAircraft);
         flightAircraftInfo.put("crew", availableCrew);
-        //flightAircraftInfo.put("origin", origin);
-        //flightAircraftInfo.put("destination", destination);
 
-        //return ResponseEntity.status(HttpStatus.CREATED).body(flightAircraftInfo);
+
+
         return ResponseEntity.ok(flightAircraftInfo);
     }
-    /*@PostMapping("/flight")
-    @Transactional
-    public ResponseEntity<?> addFlight(@RequestBody Flight newFlight) {
-        Optional<Aircraft> availableAircraftOptional = aircraftRepository.findFirstByAssignedFalse();
-        if (availableAircraftOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("No available aircraft for assignment");
-        }
-        
-        Optional<Crew> availableCrewOptional = crewRepository.findFirstByAssignedFalse();
-        if (availableCrewOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("No available crew for assignment");
-        }
-        
-        Aircraft availableAircraft = availableAircraftOptional.get();
-        availableAircraft.setAssigned(true);
-        availableAircraft.setFlight(newFlight);
-        aircraftRepository.save(availableAircraft);
-
-        
-        Crew availableCrew = availableCrewOptional.get();
-        availableCrew.setAssigned(true);
-        availableCrew.setFlight(newFlight);
-        crewRepository.save(availableCrew);
-        
-        Flight savedFlight = flightRepository.save(newFlight);
-
-        savedFlight.setAircraft(availableAircraft); // Set the assigned aircraft in the flight
-        savedFlight.setCrew(availableCrew);
-        flightRepository.save(savedFlight);
-
-        // Constructing response payload
-        Map<String, Object> flightAircraftInfo = new HashMap<>();
-        flightAircraftInfo.put("flight", savedFlight);
-        flightAircraftInfo.put("aircraft", availableAircraft);
-        flightAircraftInfo.put("crew", availableCrew);
-
-        //return ResponseEntity.status(HttpStatus.CREATED).body(flightAircraftInfo);
-        return ResponseEntity.ok(flightAircraftInfo);
-    }*/
     
     @DeleteMapping("/flight/{id}") // Endpoint to delete a flight
     public ResponseEntity<String> deleteFlight(@PathVariable Long id) {
