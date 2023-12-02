@@ -13,6 +13,7 @@ import com.ensf614.flightreservation.repository.LocationRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -192,6 +193,16 @@ public class FlightController {
     public ResponseEntity<List<Flight>> getAllLocations() {
         List<Flight> flightList = flightRepository.findAll();
         return ResponseEntity.ok(flightList);
+    }
+    
+    @GetMapping("/flight/search")
+    public ResponseEntity<List<Flight>> searchFlights(
+        @RequestParam String origin,
+        @RequestParam String destination,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate
+    ) {
+        List<Flight> flights = flightRepository.findByOriginAndDestinationAndDepartureDate(origin, destination, departureDate);
+        return ResponseEntity.ok(flights);
     }
     
     // Other methods...

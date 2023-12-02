@@ -22,12 +22,12 @@ const FlightSearch = () => {
     const fetchFlights = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/flight`,
+          `http://localhost:8080/flight/search`,
           {
             params: {
-              from: fromLocation,
-              to: destination,
-              date: departureDate,
+              origin: fromLocation,
+              destination: destination,
+              departureDate: departureDate,
             },
           }
         );
