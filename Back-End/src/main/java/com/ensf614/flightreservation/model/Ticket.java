@@ -1,6 +1,10 @@
 package com.ensf614.flightreservation.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
 
@@ -34,36 +38,51 @@ public class Ticket {
 	private String seatType;
 	private double price;
 	
+	// Payment related fields.
+	@JsonBackReference
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "paymentid")
+	private Payment payment;
+	
 	// Default constructor.
 	public Ticket() {
-		
 	}
 	
-	// Constructor for Ticket that takes in flight, seat row, and column.
-	public Ticket(Flight flight, int r, char c, String fn, String ln) {
-		this.flight = flight;
-		
-		// Set the first name and last name of the ticket holder.
-		this.firstName = fn;
-		this.lastName = ln;
-		
-		// Initialize the ticket-related fields using flight information.
-		this.origin = flight.getOrigin();
-		this.destination = flight.getDestination();
-		this.departureDate = flight.getDepartureDate();
-		
-		// Set the seat for this Ticket.
-		this.seat = findSeatByRowAndColumn(flight, r, c);
-		
-		// Based on the seat, set the seat related variables for the Ticket.
-		this.seatRowNum = this.seat.getRowNum();
-		this.seatColChar = this.seat.getColChar();
-		this.seatType = this.seat.getSeatType();
-		this.price = this.seat.getPrice();
-		
-		// Mark the seat as assigned.
-		this.seat.setAvailability(false);
-	}
+	
+	// Constructor for Ticket that takes in flight, seat row, and column, as well as payment information.
+    public Ticket(Flight flight, int r, char c, String fn, String ln, Payment p) {
+    	
+    	// Set the flight.
+        this.flight = flight;
+        
+        // Set the passenger first name and last name.
+        this.firstName = fn;
+        this.lastName = ln;
+        
+        // Set the origin, destination, and departure date (based on the associated flight).
+        this.origin = flight.getOrigin();
+        this.destination = flight.getDestination();
+        this.departureDate = flight.getDepartureDate();
+        
+        // Set the seat.
+        this.seat = findSeatByRowAndColumn(flight, r, c);
+        
+        // Set the seat row num, col, type, and price (based on the associated seat).
+        this.seatRowNum = this.seat.getRowNum();
+        this.seatColChar = this.seat.getColChar();
+        this.seatType = this.seat.getSeatType();
+        this.price = this.seat.getPrice();
+        
+        // Set the availability of the seat to false.
+        this.seat.setAvailability(false);
+
+        // Create a Payment object with provided payment information when a Ticket is created
+        this.payment = p;
+
+        // Set the current Ticket instance for the Payment
+        this.payment.setTickets(Collections.singletonList(this));
+    }
+
 	
 	/**
 	 * Find the seat based on the flight, row, and column.
@@ -189,6 +208,34 @@ public class Ticket {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+	}
+	
+	public String getCardholderFirstName() {
+        return this.payment.getCardholderFirstName();
+    }
+
+    public String getCardholderLastName() {
+        return this.payment.getCardholderLastName();
+    }
+
+    public String getCardNumber() {
+        return this.payment != null ? this.payment.getCardNumber() : null;
+    }
+
+    public String getCardCVC() {
+        return this.payment != null ? this.payment.getCardCVC() : null;
+    }
+
+    public String getExpiry() {
+        return this.payment != null ? this.payment.getExpiry() : null;
+    }
 	
 	
 	
