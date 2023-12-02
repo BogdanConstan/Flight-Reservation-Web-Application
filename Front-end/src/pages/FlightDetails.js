@@ -11,31 +11,23 @@ const FlightDetails = () => {
   const [aircraftId, setAircraftId] = useState(null);
   const [seatMap, setSeatMap] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const [takenSeats, setTakenSeats] = useState([]); // Added state for taken seats
 
   const navigate = useNavigate();
 
   const handleProceedToPayment = () => {
-    // You can pass necessary data to the payment page using state or context
     navigate("/payment", { state: { flightId, aircraftId, selectedSeats } });
   };
 
-  const handleSeatClick = async (seat) => {
-    if (seat) {
+  const handleSeatClick = (seat) => {
+    if (seat && !takenSeats.includes(seat)) {
+      // Check if the seat is not taken
       const isAlreadySelected = selectedSeats.includes(seat);
-      const updatedSelectedSeats = isAlreadySelected
-        ? selectedSeats.filter((s) => s !== seat)
-        : [...selectedSeats, seat];
-      setSelectedSeats(updatedSelectedSeats);
-
-      // Optionally, update the backend about the seat selection
-      /*try {
-        await axios.put("http://localhost:8080/seatAssigned", {
-          seatNumber: seat,
-          isSelected: !isAlreadySelected,
-        });
-      } catch (error) {
-        console.error("Error updating seat:", error);
-      }*/
+      setSelectedSeats(
+        isAlreadySelected
+          ? selectedSeats.filter((s) => s !== seat)
+          : [...selectedSeats, seat]
+      );
     }
   };
 
@@ -48,7 +40,6 @@ const FlightDetails = () => {
         setAircraftId(response.data);
       } catch (error) {
         console.error("Error fetching aircraft:", error);
-        // Handle error as needed
       }
     };
 
@@ -63,9 +54,12 @@ const FlightDetails = () => {
             `http://localhost:8080/seats/${aircraftId}`
           );
           setSeatMap(response.data);
+          const takenSeatsArray = response.data
+            .filter((seat) => !seat.availability) // Assuming 'availability' indicates if a seat is taken
+            .map((seat) => `${seat.rowNum}${seat.colChar}`);
+          setTakenSeats(takenSeatsArray);
         } catch (error) {
           console.error("Error fetching seats:", error);
-          // Handle error as needed
         }
       }
     };
@@ -75,20 +69,17 @@ const FlightDetails = () => {
 
   const generateSeatRows = () => {
     const rows = [];
-    const alphabet = "ABCDEF"; // Update to the desired number of columns, e.g., 'ABCDEF' for 6 columns
+    const alphabet = "ABCDEF"; // Update as needed
 
-    // Generate rows and columns with alternating seat positions
     for (let i = 1; i <= 20; i++) {
-      // Assuming 20 rows, adjust as needed
       const row = [];
       for (let j = 0; j < 6; j++) {
-        // Total number of seats per row (adjust as needed)
         row.push(`${i}${alphabet[j]}`);
         if (j === 2) {
-          row.push(null); // Add a null item to create a separation between seat groups
+          row.push(null); // Separation
         }
       }
-      rows.push(row); // Push the generated row into the rows array
+      rows.push(row);
     }
     return rows;
   };
@@ -103,10 +94,7 @@ const FlightDetails = () => {
           Flight Details - Flight {flightId}
         </Typography>
         <Paper elevation={3} sx={{ p: 2 }}>
-          {/* Display aircraftId */}
           <Typography variant="h6">Aircraft ID: {aircraftId}</Typography>
-
-          {/* Display selected seats horizontally */}
           <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
             Selected Seats:
           </Typography>
@@ -125,7 +113,6 @@ const FlightDetails = () => {
               </Typography>
             ))}
           </div>
-          {/* Display seats */}
           <div
             style={{
               display: "grid",
@@ -135,34 +122,34 @@ const FlightDetails = () => {
           >
             {seatRows.map((row, rowIndex) => (
               <React.Fragment key={rowIndex}>
-                {row.map((seat, columnIndex) => (
-                  <div
-                    key={`${rowIndex}-${columnIndex}`}
-                    style={{
-                      width: seat ? "50px" : "10px",
-                      height: "50px",
-                      border: "1px solid black",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      cursor: seat ? "pointer" : "default",
-                      backgroundColor: selectedSeats.includes(seat)
-                        ? "green"
-                        : seat
-                        ? "white"
-                        : "transparent",
-                    }}
-                    onClick={() => handleSeatClick(seat)}
-                  >
-                    {seat}
-                  </div>
-                ))}
+                {row.map((seat, columnIndex) => {
+                  const isTaken = takenSeats.includes(seat);
+                  return (
+                    <div
+                      key={`${rowIndex}-${columnIndex}`}
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        border: "1px solid black",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        cursor: isTaken ? "default" : "pointer",
+                        backgroundColor: isTaken
+                          ? "red"
+                          : selectedSeats.includes(seat)
+                          ? "green"
+                          : "white",
+                      }}
+                      onClick={() => !isTaken && handleSeatClick(seat)}
+                    >
+                      {seat}
+                    </div>
+                  );
+                })}
               </React.Fragment>
             ))}
           </div>
-
-          {/* Other content of FlightDetails component */}
-          {/* ... */}
           <Button
             variant="contained"
             color="primary"
