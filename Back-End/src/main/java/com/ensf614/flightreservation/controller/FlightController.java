@@ -4,6 +4,7 @@ import com.ensf614.flightreservation.model.Aircraft;
 import com.ensf614.flightreservation.repository.AircraftRepository;
 import com.ensf614.flightreservation.model.Flight;
 import com.ensf614.flightreservation.model.Seat;
+import com.ensf614.flightreservation.model.Ticket;
 import com.ensf614.flightreservation.repository.FlightRepository;
 import com.ensf614.flightreservation.model.Crew;
 import com.ensf614.flightreservation.repository.CrewRepository;
@@ -111,6 +112,22 @@ public class FlightController {
             return ResponseEntity.ok("Flight deleted and aircraft and crew released");
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+    
+    @GetMapping("/getflight/{id}")
+    public ResponseEntity<Flight> getFlightWithId(@PathVariable Long id) {
+    	try {
+    		Optional<Flight> flightOptional = flightRepository.findById(id);
+    		if (flightOptional.isPresent()) {
+                Flight flight = flightOptional.get();
+                return ResponseEntity.ok(flight);
+    		}
+    		else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Flight());
         }
     }
 

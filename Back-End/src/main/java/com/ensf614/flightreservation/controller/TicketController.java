@@ -64,7 +64,27 @@ public class TicketController {
     }
     
     @GetMapping("/ticket/search")
-    public ResponseEntity<?> getTicketByPassengerName(
+    public ResponseEntity<Ticket> getTicketByFlightIdAndSeat(
+    		@RequestParam Flight flight,
+    		@RequestParam Integer rowNum,
+    		@RequestParam Character colChar
+    		) {
+    	try {
+    		Optional<Ticket> ticketOptional = ticketRepository.findByFlightAndSeatRowNumAndSeatColChar(flight, rowNum, colChar);
+    		if (ticketOptional.isPresent()) {
+                Ticket ticket = ticketOptional.get();
+                return ResponseEntity.ok(ticket);
+    		}
+    		else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Ticket());
+        }
+    }
+    	
+    
+    /*public ResponseEntity<?> getTicketByPassengerName(
             @RequestParam String firstName,
             @RequestParam String lastName
     ) {
@@ -86,7 +106,7 @@ public class TicketController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching ticket details");
         }
-    }
+    }*/
 
     
  // Create multiple tickets.

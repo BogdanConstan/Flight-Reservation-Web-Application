@@ -1,5 +1,8 @@
 package com.ensf614.flightreservation.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //EmailController.java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -7,8 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ensf614.flightreservation.model.Ticket;
 import com.ensf614.flightreservation.service.EmailService;
 
+@CrossOrigin("*")
 @RestController
 public class EmailController {
 
@@ -16,11 +21,11 @@ public class EmailController {
  private EmailService emailService;
  
  
- @CrossOrigin("*")
+ 
  @PostMapping("/send-receipt")
  public String sendReceipt(@RequestBody ReceiptRequest receiptRequest) {
      // Assuming that receiptRequest contains a ticketId or similar identifier
-     Long ticketId = receiptRequest.getTicketId();
+     //Long ticketId = receiptRequest.getTicketId();
 
      // Construct the cancellation link
      String cancellationLink = "http://localhost:3000/cancellation";
@@ -29,7 +34,22 @@ public class EmailController {
      String emailBody = "Receipt Details: \n";
      emailBody += "Card Holder First Name: " + receiptRequest.getCardholderFirstName() + "\n";
      emailBody += "Card Holder Last Name: " + receiptRequest.getCardholderLastName() + "\n";
-     emailBody += "Card Number: " + receiptRequest.getCardNumber() + "\n";
+     emailBody += "Card Number: " + receiptRequest.getCardNumber() + "\n\n";
+     
+     for(int i = 0; i < receiptRequest.getTickets().size(); i++) {
+    	 emailBody += "\nTicket " + (i + 1) + " Details: ";
+    	 Ticket tempTicket = receiptRequest.getTickets().get(i);
+    	 emailBody += "\nTicket ID: " + tempTicket.getId();
+    	 emailBody += "\nPassenger First Name: " + tempTicket.getFirstName();
+    	 emailBody += "\nPassenger Last Name: " + tempTicket.getLastName();
+    	 emailBody += "\nPassenger Seat: " + tempTicket.getSeatRowNum() + tempTicket.getSeatColChar();
+    	 emailBody += "\nSeat Type: " + tempTicket.getSeatType();
+    	 emailBody += "\nPrice: " + tempTicket.getPrice();
+    	 emailBody += "\n\nDeparture Date: " + tempTicket.getDepartureDate();
+    	 emailBody += "\nOrigin: " + tempTicket.getOrigin();
+    	 emailBody += "\nDestination: " + tempTicket.getDestination() + "\n";
+     }
+     
      emailBody += "\n\nCancel your ticket: " + cancellationLink; // Format this as needed
 
      // Send the email
@@ -44,9 +64,9 @@ public class EmailController {
      private String cardNumber;
 
 
-	private String flightDetails;
+	 private String flightDetails;
 
-	private Long ticketid;
+	 private List<Ticket> tickets;
 
      // Getter for email
      public String getEmail() {
@@ -90,12 +110,13 @@ public class EmailController {
          this.flightDetails = flightDetails;
      }
      
-     public Long getTicketId() {
-         return ticketid;
+     public List<Ticket> getTickets() {
+         return tickets;
      }
 
-     public void setTicketId(Long ticketId) {
-         this.ticketid = ticketId;
+     public void setTickets(List<Ticket> tickets) {
+    	 this.tickets = new ArrayList<Ticket>();
+         this.tickets = tickets;
      }
 
      // Getters and setters

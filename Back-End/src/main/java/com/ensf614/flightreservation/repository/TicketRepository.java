@@ -1,5 +1,6 @@
 package com.ensf614.flightreservation.repository;
 
+import com.ensf614.flightreservation.model.Flight;
 import com.ensf614.flightreservation.model.Ticket;
 
 import java.util.List;
@@ -12,4 +13,5 @@ import org.springframework.stereotype.Repository;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 	List<Ticket> findByFlightId(Long flightId);
 	Optional<Ticket> findByFirstNameAndLastName(String firstName, String lastName);
+	Optional<Ticket> findByFlightAndSeatRowNumAndSeatColChar(Flight flight, Integer rowNum, Character colChar);
 }
