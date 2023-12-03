@@ -116,7 +116,7 @@ public class Ticket {
      * Cancels the ticket and makes the seat available again.
      */
     public void cancelTicket() {
-        // Set the ticket as canceled
+        // Set the ticket as cancelled.
         this.isCanceled = true;
 
         // Make the associated seat available again

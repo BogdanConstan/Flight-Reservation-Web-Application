@@ -1,7 +1,5 @@
 package com.ensf614.flightreservation.service;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ensf614.flightreservation.model.Ticket;
@@ -13,9 +11,6 @@ import com.ensf614.flightreservation.request.TicketRequest;
 
 import java.util.Optional;
 
-
-
-// Other imports...
 
 @Service
 public class TicketService {
@@ -61,6 +56,5 @@ public class TicketService {
         }
     }
 
-    // Additional service methods...
 }
 
