@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Paper,
+} from "@mui/material";
 
 const Confirmation = () => {
   const [email, setEmail] = useState("");
@@ -75,22 +83,41 @@ const Confirmation = () => {
   };
 
   return (
-    <div>
-      <h1>Thank You for Flying with Us</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email:
-          <input
+    <Container maxWidth="sm" style={{ marginTop: "30px" }}>
+      <Typography variant="h4" gutterBottom>
+        Thank You for Flying with Us
+      </Typography>
+      <Paper
+        style={{ padding: "20px", marginTop: "20px", marginBottom: "20px" }}
+      >
+        <Typography variant="h6">Confirm Your Booking</Typography>
+        <form onSubmit={handleSubmit} style={{ marginTop: "20px" }}>
+          <TextField
+            label="Email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            fullWidth
             required
+            variant="outlined"
+            margin="normal"
           />
-        </label>
-        <button type="submit">Send Receipt & Ticket</button>
-      </form>
-      {message && <p>{message}</p>}
-    </div>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            style={{ marginTop: "10px" }}
+          >
+            Send Receipt & Ticket
+          </Button>
+        </form>
+      </Paper>
+      {message && (
+        <Box mt={2}>
+          <Typography color="textSecondary">{message}</Typography>
+        </Box>
+      )}
+    </Container>
   );
 };
 

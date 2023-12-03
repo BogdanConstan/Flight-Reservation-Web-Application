@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
@@ -27,6 +28,8 @@ public class Ticket {
 	private String origin;
 	private String destination;
 	private LocalDate departureDate;
+	
+	private boolean isCanceled = false;
 	
 	// Seat related fields.
 	@OneToOne
@@ -108,6 +111,19 @@ public class Ticket {
 
 	    throw new SeatNotFoundException("Seat not found for row " + r + " and column " + c);
 	}
+	
+    /**
+     * Cancels the ticket and makes the seat available again.
+     */
+    public void cancelTicket() {
+        // Set the ticket as canceled
+        this.isCanceled = true;
+
+        // Make the associated seat available again
+        if (this.seat != null) {
+            this.seat.setAvailability(true);
+        }
+    }
 	
 	// Getters and setters.
 	public void setId(Long id) {
@@ -235,6 +251,14 @@ public class Ticket {
 
     public String getExpiry() {
         return this.payment != null ? this.payment.getExpiry() : null;
+    }
+    
+    public boolean isCanceled() {
+        return isCanceled;
+    }
+
+    public void setCanceled(boolean isCanceled) {
+        this.isCanceled = isCanceled;
     }
 	
 	

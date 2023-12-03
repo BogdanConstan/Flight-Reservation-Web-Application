@@ -7,8 +7,13 @@ import com.ensf614.flightreservation.repository.FlightRepository;
 import com.ensf614.flightreservation.repository.TicketRepository;
 import com.ensf614.flightreservation.repository.PaymentRepository;
 import com.ensf614.flightreservation.request.TicketRequest;
+import com.ensf614.flightreservation.service.TicketService;
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,12 +28,14 @@ public class TicketController {
     private final TicketRepository ticketRepository;
     private final FlightRepository flightRepository;
     private final PaymentRepository paymentRepository;
+    private final TicketService ticketService;
 
     @Autowired
-    public TicketController(TicketRepository ticketRepository, FlightRepository flightRepository, PaymentRepository paymentRepository) {
+    public TicketController(TicketRepository ticketRepository, FlightRepository flightRepository, PaymentRepository paymentRepository, TicketService ticketService) {
         this.ticketRepository = ticketRepository;
         this.flightRepository = flightRepository;
         this.paymentRepository = paymentRepository;
+        this.ticketService = ticketService;
     }
 
     // GET all the tickets.
@@ -62,6 +69,17 @@ public class TicketController {
         paymentRepository.save(payment);
 
         return createdTickets;
+    }
+    
+    // Endpoint to cancel a ticket
+    @PostMapping("/cancel-ticket")
+    public ResponseEntity<String> cancelTicket(@RequestParam Long ticketId) {
+        try {
+            ticketService.cancelTicket(ticketId);
+            return ResponseEntity.ok("Ticket successfully canceled");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error canceling ticket: " + e.getMessage());
+        }
     }
 
     private Payment createPayment(TicketRequest ticketRequest) {

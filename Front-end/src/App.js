@@ -19,6 +19,7 @@ import FlightAttendantLogin from "./pages/FlightAttendantLogin";
 import FlightAttendantDashboard from "./pages/FlightAttendantDashboard";
 import FlightAttendantBrowseFlights from "./pages/flight-attendant/FlightAttendantBrowseFlights";
 import Confirmation from "./pages/Confirmation";
+import Cancellation from "./pages/Cancellation";
 
 import Payment from "./pages/Payment";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -37,6 +38,7 @@ function App() {
 
         <Route path="/payment" element={<Payment />} />
         <Route path="/confirmation" element={<Confirmation />} />
+        <Route path="/cancellation" element={<Cancellation />} />
         {/* Admin routes */}
         <Route path="/admin/browse-flights" element={<AdminBrowseFlights />} />
         <Route path="/admin/browse-crews" element={<AdminBrowseCrews />} />

@@ -19,14 +19,27 @@ public class EmailController {
  @CrossOrigin("*")
  @PostMapping("/send-receipt")
  public String sendReceipt(@RequestBody ReceiptRequest receiptRequest) {
-     String receiptInfo = "Flight Details: " + receiptRequest.getFlightDetails(); // Format this as needed
-     emailService.sendSimpleMessage(receiptRequest.getEmail(), "Your Flight Receipt", receiptInfo);
+     // Assuming that receiptRequest contains a ticketId or similar identifier
+     Long ticketId = receiptRequest.getTicketId();
+
+     // Construct the cancellation link
+     String cancellationLink = "http://localhost:3000/cancellation";
+     
+     
+
+     // Create the email body including the flight details and cancellation link
+     String emailBody = "Flight Details: " + receiptRequest.getFlightDetails() 
+                      + "\n\nCancel your ticket: " + cancellationLink; // Format this as needed
+
+     // Send the email
+     emailService.sendSimpleMessage(receiptRequest.getEmail(), "Your Flight Receipt", emailBody);
      return "Receipt sent successfully";
  }
 
  static class ReceiptRequest {
      private String email;
      private String flightDetails;
+     private Long ticketid;
 
      // Getter for email
      public String getEmail() {
@@ -46,6 +59,14 @@ public class EmailController {
      // Setter for flightDetails
      public void setFlightDetails(String flightDetails) {
          this.flightDetails = flightDetails;
+     }
+     
+     public Long getTicketId() {
+         return ticketid;
+     }
+
+     public void setTicketId(Long ticketId) {
+         this.ticketid = ticketId;
      }
 
      // Getters and setters

@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+  Container,
+  Typography,
+  Paper,
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 
 const Payment = () => {
   const location = useLocation();
@@ -13,7 +23,7 @@ const Payment = () => {
     cardNumber: "",
     cardExpiry: "",
     cardCVC: "",
-    email: ""
+    email: "",
   });
 
   const handleInputChange = (event) => {
@@ -27,7 +37,7 @@ const Payment = () => {
         flightId: flightId,
         aircraftId: aircraftId,
         selectedSeatDetails: selectedSeatDetails,
-        paymentInfo: paymentInfo
+        paymentInfo: paymentInfo,
       },
     });
   };
@@ -66,127 +76,98 @@ const Payment = () => {
   }, [aircraftId, selectedSeats]);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Payment Page</h2>
+    <Container maxWidth="md" style={{ marginTop: "30px" }}>
+      <Typography variant="h4" gutterBottom>
+        Payment Page
+      </Typography>
 
-      {/* Displaying Flight ID */}
       {flightId && (
-        <div style={{ marginBottom: "20px" }}>
-          <h3>Flight ID: {flightId}</h3>
-        </div>
+        <Typography variant="h6" gutterBottom>
+          Flight ID: {flightId}
+        </Typography>
       )}
 
-      {/* Displaying selected seats */}
-      <div>
-        <h3>Selected Seats:</h3>
-        <ul style={{ listStyleType: "none", padding: 0 }}>
+      <Paper elevation={3} style={{ padding: "20px", marginBottom: "20px" }}>
+        <Typography variant="h6">Selected Seats:</Typography>
+        <List>
           {selectedSeatDetails &&
             selectedSeatDetails.map((seat, index) => (
-              <li
-                key={index}
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "10px",
-                  marginBottom: "10px",
-                }}
-              >
-                <p>Seat: {seat.rowNum}{seat.colChar}</p>
-                <p>Seat Type: {`${seat.seatType}`}</p>
-                <p>Seat Price: ${`${seat.price}`}</p>
-              </li>
+              <ListItem key={index} divider>
+                <ListItemText
+                  primary={`Seat: ${seat.rowNum}${seat.colChar}`}
+                  secondary={`Seat Type: ${seat.seatType} - Seat Price: $${seat.price}`}
+                />
+              </ListItem>
             ))}
-        </ul>
-      </div>
+        </List>
+      </Paper>
 
-      {/* Payment Information Form */}
-      <div style={{ marginTop: "20px" }}>
-        <h3>Payment Information:</h3>
-        <form>
-          <div style={{ marginBottom: "10px" }}>
-            <label>
-              First Name:
-              <input
-                type="text"
-                name="firstName"
-                value={paymentInfo.firstName}
-                onChange={handleInputChange}
-              />
-            </label>
-          </div>
-          <div style={{ marginBottom: "10px" }}>
-            <label>
-              Last Name:
-              <input
-                type="text"
-                name="lastName"
-                value={paymentInfo.lastName}
-                onChange={handleInputChange}
-              />
-            </label>
-          </div>
-          <div style={{ marginBottom: "10px" }}>
-            <label>
-              Card Number:
-              <input
-                type="text"
-                name="cardNumber"
-                value={paymentInfo.cardNumber}
-                onChange={handleInputChange}
-              />
-            </label>
-          </div>
-          <div style={{ marginBottom: "10px" }}>
-            <label>
-              Card Expiry:
-              <input
-                type="text"
-                name="cardExpiry"
-                value={paymentInfo.cardExpiry}
-                onChange={handleInputChange}
-                placeholder="MM/YY"
-              />
-            </label>
-          </div>
-          <div style={{ marginBottom: "10px" }}>
-            <label>
-              CVC:
-              <input
-                type="text"
-                name="cardCVC"
-                value={paymentInfo.cardCVC}
-                onChange={handleInputChange}
-              />
-            </label>
-          </div>
-          <div style={{ marginBottom: "10px" }}>
-            <label>
-              Email Address:
-              <input
-                type="email"
-                name="email"
-                value={paymentInfo.email}
-                onChange={handleInputChange}
-              />
-            </label>
-          </div>
+      <Paper elevation={3} style={{ padding: "20px" }}>
+        <Typography variant="h6" gutterBottom>
+          Payment Information:
+        </Typography>
+        <form noValidate autoComplete="off">
+          <TextField
+            label="First Name"
+            name="firstName"
+            value={paymentInfo.firstName}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Last Name"
+            name="lastName"
+            value={paymentInfo.lastName}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Card Number"
+            name="cardNumber"
+            value={paymentInfo.cardNumber}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Card Expiry"
+            name="cardExpiry"
+            value={paymentInfo.cardExpiry}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+            placeholder="MM/YY"
+          />
+          <TextField
+            label="CVC"
+            name="cardCVC"
+            value={paymentInfo.cardCVC}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Email Address"
+            name="email"
+            type="email"
+            value={paymentInfo.email}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginTop: "20px" }}
+            onClick={handleCheckout}
+          >
+            Confirm Checkout
+          </Button>
         </form>
-      </div>
-
-      {/* Confirm Checkout Button */}
-      <button
-        style={{
-          padding: "10px",
-          backgroundColor: "blue",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          marginTop: "20px",
-        }}
-        onClick={handleCheckout}
-      >
-        Confirm Checkout
-      </button>
-    </div>
+      </Paper>
+    </Container>
   );
 };
 

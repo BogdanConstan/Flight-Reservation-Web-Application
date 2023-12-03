@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Typography, Paper, Button } from "@mui/material";
+import { Container, Typography, Paper, Button, Box } from "@mui/material";
 import axios from "axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -12,16 +12,21 @@ const FlightDetails = () => {
   const [seatMap, setSeatMap] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [takenSeats, setTakenSeats] = useState([]); // Added state for taken seats
+  const [hasMadeSelection, setHasMadeSelection] = useState(false);
 
   const navigate = useNavigate();
 
   const handleProceedToPayment = () => {
-    navigate("/payment", { state: { flightId, aircraftId, selectedSeats } });
+    if (selectedSeats.length === 0) {
+      // Check if any seat is currently selected
+      alert("Please select at least one seat before proceeding.");
+    } else {
+      navigate("/payment", { state: { flightId, aircraftId, selectedSeats } });
+    }
   };
 
   const handleSeatClick = (seat) => {
     if (seat && !takenSeats.includes(seat)) {
-      // Check if the seat is not taken
       const isAlreadySelected = selectedSeats.includes(seat);
       setSelectedSeats(
         isAlreadySelected
@@ -89,35 +94,44 @@ const FlightDetails = () => {
   return (
     <div>
       <Header />
-      <Container maxWidth="md" sx={{ my: 4 }}>
-        <Typography variant="h4" gutterBottom>
+      <Container
+        maxWidth="md"
+        sx={{ my: 4, backgroundColor: "#f7f7f7", borderRadius: 2, p: 3 }}
+      >
+        <Typography
+          variant="h4"
+          gutterBottom
+          component="div"
+          sx={{ textAlign: "center", mb: 3 }}
+        >
           Flight Details - Flight {flightId}
         </Typography>
-        <Paper elevation={3} sx={{ p: 2 }}>
-          <Typography variant="h6">Aircraft ID: {aircraftId}</Typography>
-          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-            Selected Seats:
+        <Paper elevation={3} sx={{ p: 2, backgroundColor: "#fafafa" }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Aircraft ID: {aircraftId}
           </Typography>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+          <Box sx={{ mb: 3, display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            <Typography variant="h6">Selected Seats:</Typography>
             {selectedSeats.map((seat) => (
               <Typography
                 key={seat}
                 component="span"
                 sx={{
                   backgroundColor: "#e0e0e0",
-                  padding: "5px",
+                  padding: "5px 10px",
                   borderRadius: "4px",
                 }}
               >
                 {seat}
               </Typography>
             ))}
-          </div>
-          <div
-            style={{
+          </Box>
+          <Box
+            sx={{
               display: "grid",
-              gridTemplateColumns: "repeat(7, 1fr)",
-              gap: "5px",
+              gridTemplateColumns: "repeat(7, 50px)",
+              gap: "10px",
+              mb: 3,
             }}
           >
             {seatRows.map((row, rowIndex) => (
@@ -125,31 +139,37 @@ const FlightDetails = () => {
                 {row.map((seat, columnIndex) => {
                   const isTaken = takenSeats.includes(seat);
                   return (
-                    <div
+                    <Box
                       key={`${rowIndex}-${columnIndex}`}
-                      style={{
-                        width: "50px",
-                        height: "50px",
+                      sx={{
+                        width: 50,
+                        height: 50,
                         border: "1px solid black",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
                         cursor: isTaken ? "default" : "pointer",
                         backgroundColor: isTaken
-                          ? "red"
+                          ? "#ff6666"
                           : selectedSeats.includes(seat)
-                          ? "green"
-                          : "white",
+                          ? "#66ff66"
+                          : "#fff",
+                        ":hover": {
+                          backgroundColor:
+                            !isTaken && !selectedSeats.includes(seat)
+                              ? "#e6e6e6"
+                              : "",
+                        },
                       }}
                       onClick={() => !isTaken && handleSeatClick(seat)}
                     >
                       {seat}
-                    </div>
+                    </Box>
                   );
                 })}
               </React.Fragment>
             ))}
-          </div>
+          </Box>
           <Button
             variant="contained"
             color="primary"
