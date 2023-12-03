@@ -6,12 +6,10 @@ import {
   Grid,
   TextField,
   Button,
-  Checkbox,
-  FormControlLabel,
-  Box,
-  MenuItem,
   IconButton,
+  MenuItem,
   Paper,
+  Box,
 } from "@mui/material";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -24,13 +22,9 @@ import { useNavigate } from "react-router-dom";
 const HomePage = () => {
   const [fromLocation, setFromLocation] = useState("");
   const [destination, setDestination] = useState("");
-  const [roundTrip, setRoundTrip] = useState(false);
   const [departureDate, setDepartureDate] = useState("");
-  const [returnDate, setReturnDate] = useState("");
-  const [numberOfTickets, setNumberOfTickets] = useState(1);
   const [locations, setLocations] = useState([]); // State for locations
   const navigate = useNavigate();
-  const ticketNumbers = [1, 2, 3, 4, 5];
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -48,44 +42,23 @@ const HomePage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Check if round trip is selected
-    if (roundTrip) {
-      // For round trip, both departure and return dates should be filled out
-      if (!departureDate || !returnDate) {
-        alert("Please fill in both departure and return dates.");
-      } else if (returnDate < departureDate) {
-        alert("Return date cannot be before departure date.");
-      } else if (fromLocation === destination) {
-        alert("From location and destination cannot be the same.");
-      } else {
-        // Redirect to FlightSearch for a valid round trip
-        navigate("/flight-search", {
-          state: { fromLocation, destination, departureDate },
-        });
-      }
+    if (!departureDate) {
+      alert("Please fill in the departure date.");
+    } else if (fromLocation === destination) {
+      alert("From location and destination cannot be the same.");
     } else {
-      // For one-way trip, only departure date is required
-      if (!departureDate) {
-        alert("Please fill in the departure date.");
-      } else if (fromLocation === destination) {
-        alert("From location and destination cannot be the same.");
-      } else {
-        // Redirect to FlightSearch for a valid one-way trip
-        navigate("/flight-search", {
-          state: { fromLocation, destination, departureDate },
-        });
-      }
+      navigate("/flight-search", {
+        state: { fromLocation, destination, departureDate },
+      });
     }
   };
 
   const handleSwapLocations = () => {
-    // Swap the selected options for "From Location" and "Destination"
     setFromLocation(destination);
     setDestination(fromLocation);
   };
 
   const StyledContainer = styled(Container)(({ theme }) => ({
-    // backgroundColor: theme.palette.background.paper,
     backgroundColor: "rgba(255, 255, 255, 0.8)",
     padding: theme.spacing(4),
     borderRadius: theme.shape.borderRadius,
@@ -96,21 +69,8 @@ const HomePage = () => {
   const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(3),
     margin: theme.spacing(3, 0),
-    backgroundColor: "#f5f5f5", // Light grey background
+    backgroundColor: "#f5f5f5",
   }));
-
-  const headlineStyle = {
-    fontSize: "2.5rem", // Larger font size for headline
-    fontWeight: "bold", // Bold font weight
-    marginBottom: "0.5rem", // Space below the headline
-    color: "#123456", // Example color, adjust as needed
-  };
-
-  const subtitleStyle = {
-    fontSize: "1.5rem", // Slightly larger font size for subtitle
-    fontStyle: "italic", // Italicized subtitle for emphasis
-    color: "#7890AB", // Example color, adjust as needed
-  };
 
   const BackgroundImageContainer = styled("div")({
     backgroundImage: `url(${backgroundImage})`,
@@ -127,9 +87,8 @@ const HomePage = () => {
 
   return (
     <Box position="relative">
-      <BackgroundImageContainer />
+      <BackgroundImageContainer /> {/* Include the background image */}
       <Header />
-
       <StyledContainer maxWidth="md">
         <Grid container spacing={2} alignItems="center" justifyContent="center">
           <Grid item>
@@ -199,35 +158,6 @@ const HomePage = () => {
                   ))}
                 </TextField>
               </Grid>
-
-              <Grid item xs={12} sm={3}>
-                <TextField
-                  select
-                  label="Number of Tickets"
-                  fullWidth
-                  value={numberOfTickets}
-                  onChange={(e) => setNumberOfTickets(e.target.value)}
-                  variant="outlined"
-                >
-                  {ticketNumbers.map((number) => (
-                    <MenuItem key={number} value={number}>
-                      {number}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={roundTrip}
-                      onChange={(e) => setRoundTrip(e.target.checked)}
-                    />
-                  }
-                  label="Roundtrip"
-                />
-              </Grid>
-
               <Grid item xs={12} sm={6}>
                 <TextField
                   type="date"
@@ -238,18 +168,6 @@ const HomePage = () => {
                   onChange={(e) => setDepartureDate(e.target.value)}
                 />
               </Grid>
-              {roundTrip && ( // Conditionally render this Grid item
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    type="date"
-                    label="Return Date"
-                    fullWidth
-                    InputLabelProps={{ shrink: true }}
-                    value={returnDate}
-                    onChange={(e) => setReturnDate(e.target.value)}
-                  />
-                </Grid>
-              )}
             </Grid>
             <Button
               type="submit"
@@ -262,7 +180,6 @@ const HomePage = () => {
           </Box>
         </StyledPaper>
       </StyledContainer>
-
       <Footer />
     </Box>
   );

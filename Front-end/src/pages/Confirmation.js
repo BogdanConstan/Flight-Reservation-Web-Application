@@ -13,42 +13,59 @@ import {
 const Confirmation = () => {
   const [email, setEmail] = useState("");
   const location = useLocation();
-  const { flightId, selectedSeatDetails, paymentInfo } = location.state || {};
+  const {
+    flightId,
+    selectedSeatDetails,
+    paymentInfo,
+    passengerInfo,
+  } = location.state || {};
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     const updateSeatAvailability = async () => {
       try {
-        // Iterate through selectedSeatDetails to update seat availability
         for (const seat of selectedSeatDetails) {
           await axios.put("http://localhost:8080/seatAssigned", {
-            id: seat.id, // Assuming seat.id exists in selectedSeatDetails
+            id: seat.id,
           });
         }
       } catch (error) {
         console.error("Error updating seat availability:", error);
-        // Handle error if needed
       }
     };
 
     const generateTicket = async () => {
       try {
-        // Iterate through selectedSeatDetails to generate tickets
-        for (const seat of selectedSeatDetails) {
+        const ticketRequests = [];
+
+        for (let i = 0; i < selectedSeatDetails.length; i++) {
+          const seat = selectedSeatDetails[i];
+          const passenger = passengerInfo[i];
+
           const ticketRequest = {
-            flight: { id: flightId }, // Assuming flightId is available
+            flight: {
+              id: flightId,
+            },
             seatRowNum: seat.rowNum,
             seatColChar: seat.colChar,
-            firstName: paymentInfo.firstName,
-            lastName: paymentInfo.lastName,
-            // Add any other necessary details for ticket generation
+            firstName: passenger.firstName,
+            lastName: passenger.lastName,
+            cardholderFirstName: paymentInfo.cardholderFirstName,
+            cardholderLastName: paymentInfo.cardholderLastName,
+            cardNumber: paymentInfo.cardNumber,
+            cardCVC: paymentInfo.cardCVC,
+            expiry: paymentInfo.cardExpiry,
           };
 
-          await axios.post("http://localhost:8080/ticket", ticketRequest);
+          ticketRequests.push(ticketRequest);
         }
+
+        console.log(paymentInfo);
+        console.log(ticketRequests);
+
+        await axios.post("http://localhost:8080/tickets", ticketRequests);
       } catch (error) {
         console.error("Error generating ticket:", error);
-        // Handle error if needed
       }
     };
 
@@ -56,7 +73,7 @@ const Confirmation = () => {
       updateSeatAvailability();
       generateTicket();
     }
-  }, [flightId, selectedSeatDetails, paymentInfo]);
+  }, [flightId, selectedSeatDetails, paymentInfo, passengerInfo]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -68,6 +85,7 @@ const Confirmation = () => {
           flightId: flightId,
           selectedSeatDetails: selectedSeatDetails,
           paymentInfo: paymentInfo,
+          passengerInfo: passengerInfo,
         }),
       });
 

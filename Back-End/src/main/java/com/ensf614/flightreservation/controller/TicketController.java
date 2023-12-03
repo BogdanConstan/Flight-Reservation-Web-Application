@@ -49,9 +49,19 @@ public class TicketController {
     public Ticket getTicketById(@PathVariable Long id) {
         return ticketRepository.findById(id).orElse(null);
     }
+    
+    @GetMapping("/flight/{flightId}/passengers")
+    public ResponseEntity<List<Ticket>> getPassengersByFlightId(@PathVariable Long flightId) {
+        try {
+            List<Ticket> tickets = ticketRepository.findByFlightId(flightId);
+            return ResponseEntity.ok(tickets);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+        }
+    }
 
     
-    // Create multiple tickets.
+ // Create multiple tickets.
     @PostMapping("/tickets")
     public List<Ticket> createTickets(@RequestBody List<TicketRequest> ticketRequests) {
         // Extract payment information from the first ticket request
@@ -70,17 +80,6 @@ public class TicketController {
 
         return createdTickets;
     }
-    
-    // Endpoint to cancel a ticket
-    @PostMapping("/cancel-ticket")
-    public ResponseEntity<String> cancelTicket(@RequestParam Long ticketId) {
-        try {
-            ticketService.cancelTicket(ticketId);
-            return ResponseEntity.ok("Ticket successfully canceled");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error canceling ticket: " + e.getMessage());
-        }
-    }
 
     private Payment createPayment(TicketRequest ticketRequest) {
         // Extract payment information from the first ticket request
@@ -94,7 +93,7 @@ public class TicketController {
         Payment payment = new Payment(cardholderFirstName, cardholderLastName, cardNumber, cardCVC, expiry);
 
         // Save the payment
-        return paymentRepository.save(payment);
+        return payment;
     }
     
     private Ticket createTicketInternal(TicketRequest ticketRequest, Payment payment) {
@@ -112,12 +111,22 @@ public class TicketController {
             // Create a new Ticket using the appropriate constructor
             Ticket newTicket = new Ticket(flight, seatRowNum, seatColChar, firstName, lastName, payment);
             
-
             // Save the new ticket
             return ticketRepository.save(newTicket);
         } else {
             // Handle the case where the associated flight is not found
             throw new RuntimeException("Flight not found for id: " + flightId);
+        }
+    }
+    
+    // Endpoint to cancel a ticket
+    @PostMapping("/cancel-ticket")
+    public ResponseEntity<String> cancelTicket(@RequestParam Long ticketId) {
+        try {
+            ticketService.cancelTicket(ticketId);
+            return ResponseEntity.ok("Ticket successfully canceled");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error canceling ticket: " + e.getMessage());
         }
     }
 

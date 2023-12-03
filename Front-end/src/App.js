@@ -2,6 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import About from "./pages/About";
+import Faq from "./pages/Faq";
+import Contact from "./pages/Contact";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import SignupPage from "./pages/SignupPage";
@@ -30,6 +33,9 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/faq" element={<Faq />} />
         <Route path="/admin-login" element={<AdminLoginPage />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/signup" element={<SignupPage />} />

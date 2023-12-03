@@ -17,18 +17,28 @@ const Payment = () => {
   const navigate = useNavigate();
   const { flightId, aircraftId, selectedSeats } = location.state || {};
   const [selectedSeatDetails, setSelectedSeatDetails] = useState([]);
+  const [passengerInfo, setPassengerInfo] = useState([]);
   const [paymentInfo, setPaymentInfo] = useState({
-    firstName: "",
-    lastName: "",
     cardNumber: "",
     cardExpiry: "",
     cardCVC: "",
     email: "",
+    cardholderFirstName: "", // Added cardholder first name
+    cardholderLastName: "", // Added cardholder last name
   });
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setPaymentInfo({ ...paymentInfo, [name]: value });
+  };
+
+  const handlePassengerInfoChange = (index, field, value) => {
+    const updatedPassengerInfo = [...passengerInfo];
+    updatedPassengerInfo[index] = {
+      ...updatedPassengerInfo[index],
+      [field]: value,
+    };
+    setPassengerInfo(updatedPassengerInfo);
   };
 
   const handleCheckout = () => {
@@ -37,6 +47,7 @@ const Payment = () => {
         flightId: flightId,
         aircraftId: aircraftId,
         selectedSeatDetails: selectedSeatDetails,
+        passengerInfo: passengerInfo,
         paymentInfo: paymentInfo,
       },
     });
@@ -45,8 +56,8 @@ const Payment = () => {
   useEffect(() => {
     const fetchSeatDetails = async () => {
       const seatDetails = [];
+      const initialPassengerInfo = [];
 
-      // Iterate through each selected seat
       for (const seat of selectedSeats) {
         const match = seat.match(/^(\d+)([A-Z]+)$/);
         if (match) {
@@ -60,14 +71,15 @@ const Payment = () => {
 
             const fetchedSeat = response.data;
             seatDetails.push(fetchedSeat);
+            initialPassengerInfo.push({ firstName: "", lastName: "" });
           } catch (error) {
             console.error("Error fetching seat details:", error);
-            // Handle error as needed
           }
         }
       }
 
       setSelectedSeatDetails(seatDetails);
+      setPassengerInfo(initialPassengerInfo);
     };
 
     if (selectedSeats.length > 0 && aircraftId) {
@@ -107,18 +119,42 @@ const Payment = () => {
           Payment Information:
         </Typography>
         <form noValidate autoComplete="off">
+          {passengerInfo.map((passenger, index) => (
+            <div key={index}>
+              <TextField
+                label={`Passenger ${index + 1} First Name`}
+                name={`firstName${index}`}
+                value={passenger.firstName}
+                onChange={(event) =>
+                  handlePassengerInfoChange(index, "firstName", event.target.value)
+                }
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label={`Passenger ${index + 1} Last Name`}
+                name={`lastName${index}`}
+                value={passenger.lastName}
+                onChange={(event) =>
+                  handlePassengerInfoChange(index, "lastName", event.target.value)
+                }
+                fullWidth
+                margin="normal"
+              />
+            </div>
+          ))}
           <TextField
-            label="First Name"
-            name="firstName"
-            value={paymentInfo.firstName}
+            label="Cardholder First Name"
+            name="cardholderFirstName"
+            value={paymentInfo.cardholderFirstName}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
           />
           <TextField
-            label="Last Name"
-            name="lastName"
-            value={paymentInfo.lastName}
+            label="Cardholder Last Name"
+            name="cardholderLastName"
+            value={paymentInfo.cardholderLastName}
             onChange={handleInputChange}
             fullWidth
             margin="normal"

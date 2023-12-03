@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const AdminDashboard = () => {
+const FlightAttendantDashboard = () => {
   const navigate = useNavigate();
 
   const browseFlights = () => {
@@ -36,4 +36,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default FlightAttendantDashboard;
