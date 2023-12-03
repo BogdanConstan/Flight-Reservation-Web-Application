@@ -6,8 +6,6 @@ import Footer from "../components/Footer";
 const Contact = () => {
   return (
     <>
-      <Header />
-
       <Container maxWidth="md" style={{ marginTop: "30px" }}>
         <Typography variant="h4" gutterBottom>
           Contact Us

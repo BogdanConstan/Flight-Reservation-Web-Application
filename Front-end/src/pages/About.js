@@ -36,7 +36,6 @@ const About = () => {
   return (
     <Box position="relative">
       <BackgroundImageContainer />
-      <Header />
       <StyledContainer maxWidth="md">
         <Grid container spacing={2} alignItems="center" justifyContent="center">
           <Grid item>

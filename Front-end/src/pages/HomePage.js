@@ -88,7 +88,6 @@ const HomePage = () => {
   return (
     <Box position="relative">
       <BackgroundImageContainer /> {/* Include the background image */}
-      <Header />
       <StyledContainer maxWidth="md">
         <Grid container spacing={2} alignItems="center" justifyContent="center">
           <Grid item>

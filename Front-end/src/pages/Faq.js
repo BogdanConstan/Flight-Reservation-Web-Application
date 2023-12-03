@@ -15,8 +15,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 const FAQ = () => {
   return (
     <>
-      <Header />
-
       <Container maxWidth="md" style={{ marginTop: "30px" }}>
         <Typography variant="h4" gutterBottom>
           Frequently Asked Questions (FAQ)

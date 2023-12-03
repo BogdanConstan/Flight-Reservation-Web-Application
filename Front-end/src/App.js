@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -23,16 +23,41 @@ import FlightAttendantDashboard from "./pages/FlightAttendantDashboard";
 import FlightAttendantBrowseFlights from "./pages/flight-attendant/FlightAttendantBrowseFlights";
 import Confirmation from "./pages/Confirmation";
 import Cancellation from "./pages/Cancellation";
+import Header from "./components/Header";
+import Promos from "./pages/Promos";
 
 import Payment from "./pages/Payment";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userFirstName, setUserFirstName] = useState("");
+
+  const handleLogin = (firstName) => {
+    setIsLoggedIn(true);
+    setUserFirstName(firstName); // Set user's first name
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserFirstName(""); // Reset user's first name
+  };
+
   return (
     <Router>
+      <Header
+        isLoggedIn={isLoggedIn}
+        userFirstName={userFirstName}
+        onLogout={handleLogout}
+      />
+
+      {/* Add Header with props */}
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/login"
+          element={<LoginPage updateLoginStatus={handleLogin} />}
+        />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/faq" element={<Faq />} />
@@ -41,7 +66,8 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/flight-search" element={<FlightSearch />} />
         <Route path="/flight-details/:flightId" element={<FlightDetails />} />
-
+        {isLoggedIn && <Route path="/promos" element={<Promos />} />}{" "}
+        {/* Promos page */}
         <Route path="/payment" element={<Payment />} />
         <Route path="/confirmation" element={<Confirmation />} />
         <Route path="/cancellation" element={<Cancellation />} />

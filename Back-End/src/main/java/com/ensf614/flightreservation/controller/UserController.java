@@ -47,6 +47,19 @@ public class UserController {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 	
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody User loginUser) {
+        Optional<User> user = userRepository.findByUsername(loginUser.getUsername());
+
+        if (user.isPresent() && loginUser.getPassword().equals(user.get().getPassword())) {
+            // Optionally remove the password before sending the user data back
+            user.get().setPassword(null);
+            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
+        }
+    }
+	
 	// Update an existing user by id.
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {

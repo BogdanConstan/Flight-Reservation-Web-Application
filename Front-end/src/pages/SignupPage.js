@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from 'axios'
+import axios from "axios";
 import {
   Container,
   Typography,
@@ -39,7 +39,6 @@ const SignupPage = () => {
       console.log("Signup successful:", response.data);
       // You can also redirect the user to another page or perform other actions on success
       navigate("/");
-
     } catch (error) {
       // Handle errors
       console.error("Signup failed:", error.response.data);
@@ -49,7 +48,6 @@ const SignupPage = () => {
 
   return (
     <Box>
-      <Header />
       <Container maxWidth="sm" sx={{ mt: 8, mb: 6 }}>
         <Typography variant="h4" gutterBottom>
           Sign Up

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -6,12 +6,30 @@ import {
   IconButton,
   Button,
   Container,
+  Menu,
+  MenuItem,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu"; // For responsive menu
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff"; // Flight icon
-import { Link } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
+import { Link, useNavigate } from "react-router-dom";
 
-const Header = () => {
+const Header = ({ isLoggedIn, userFirstName, onLogout }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate();
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handlePromos = () => {
+    handleMenuClose();
+    navigate("/promos");
+  };
+
   return (
     <AppBar position="static" style={{ background: "#123456" }}>
       <Container>
@@ -44,10 +62,24 @@ const Header = () => {
             </Link>
           </Typography>
 
-          {/* Regular User Login Button */}
-          <Button color="inherit" component={Link} to="/login">
-            Login
-          </Button>
+          {isLoggedIn ? (
+            <div onMouseEnter={handleMenuOpen} onMouseLeave={handleMenuClose}>
+              <Button color="inherit">{userFirstName}</Button>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                MenuListProps={{ onMouseLeave: handleMenuClose }}
+              >
+                <MenuItem onClick={handlePromos}>Promos</MenuItem>
+                <MenuItem onClick={onLogout}>Logout</MenuItem>
+              </Menu>
+            </div>
+          ) : (
+            <Button color="inherit" component={Link} to="/login">
+              Login
+            </Button>
+          )}
 
           {/* Admin Login Button */}
           <Button color="inherit" component={Link} to="/admin-login">
