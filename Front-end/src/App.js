@@ -25,7 +25,6 @@ import Confirmation from "./pages/Confirmation";
 import Cancellation from "./pages/Cancellation";
 import Header from "./components/Header";
 import Promos from "./pages/Promos";
-
 import Payment from "./pages/Payment";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -51,7 +50,6 @@ function App() {
         onLogout={handleLogout}
       />
 
-      {/* Add Header with props */}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route
@@ -66,7 +64,9 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/flight-search" element={<FlightSearch />} />
         <Route path="/flight-details/:flightId" element={<FlightDetails />} />
-        {isLoggedIn && <Route path="/promos" element={<Promos />} />}{" "}
+        {isLoggedIn && (
+          <Route path="/promos" element={<Promos username={userFirstName} />} />
+        )}{" "}
         {/* Promos page */}
         <Route path="/payment" element={<Payment />} />
         <Route path="/confirmation" element={<Confirmation />} />
