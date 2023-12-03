@@ -1,4 +1,4 @@
-package com.ensf614.flightreservation.model;
+package com.ensf614.flightreservation.service;
 
 //EmailService.java
 import org.springframework.beans.factory.annotation.Autowired;

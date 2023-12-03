@@ -60,9 +60,6 @@ const Confirmation = () => {
           ticketRequests.push(ticketRequest);
         }
 
-        console.log(paymentInfo);
-        console.log(ticketRequests);
-
         await axios.post("http://localhost:8080/tickets", ticketRequests);
       } catch (error) {
         console.error("Error generating ticket:", error);
@@ -74,19 +71,65 @@ const Confirmation = () => {
       generateTicket();
     }
   }, [flightId, selectedSeatDetails, paymentInfo, passengerInfo]);
+  
+  const [ticketDetails, setTicketDetails] = useState(null); // State to store fetched ticket details
+
+  const fetchTicketDetails = async (firstName, lastName) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/ticket/search`, {
+        params: { firstName, lastName },
+      });
+
+      setTicketDetails(response.data);
+    } catch (error) {
+      console.error("Error fetching ticket details:", error);
+    }
+  };
+
+  // useEffect to fetch ticket details when needed
+  useEffect(() => {
+    // Assuming you have passengerInfo with firstName and lastName
+    if (passengerInfo.length > 0) {
+      const firstPassenger = passengerInfo[0];
+      fetchTicketDetails(firstPassenger.firstName, firstPassenger.lastName);
+    }
+  }, [passengerInfo]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Submit a payment receipt.
     try {
       const response = await axios.post("http://localhost:8080/send-receipt", {
         email: email,
+        cardholderFirstName: paymentInfo.cardholderFirstName,
+        cardholderLastName: paymentInfo.cardholderLastName,
+        cardNumber: paymentInfo.cardNumber,
         flightDetails: JSON.stringify({
           flightId: flightId,
           selectedSeatDetails: selectedSeatDetails,
           paymentInfo: paymentInfo,
           passengerInfo: passengerInfo,
-        }),
+        })
+      });
+
+      if (response.data === "Receipt sent successfully") {
+        setMessage("Receipt sent successfully to your email.");
+      } else {
+        setMessage("Failed to send receipt. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage(`An error occurred: ${error.message}`);
+    }
+
+    // Submit each ticket.
+    try {
+      const response = await axios.post("http://localhost:8080/send-receipt", {
+        email: email,
+        passengerFirstName: passengerInfo.firstName,
+        passengerLastName: paymentInfo.cardholderLastName,
+        ticketid: axios.get("/ticket/search")
       });
 
       if (response.data === "Receipt sent successfully") {

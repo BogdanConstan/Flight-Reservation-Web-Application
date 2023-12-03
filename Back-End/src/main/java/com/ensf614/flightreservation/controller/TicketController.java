@@ -17,7 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @CrossOrigin("*")
@@ -57,6 +60,31 @@ public class TicketController {
             return ResponseEntity.ok(tickets);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+        }
+    }
+    
+    @GetMapping("/ticket/search")
+    public ResponseEntity<?> getTicketByPassengerName(
+            @RequestParam String firstName,
+            @RequestParam String lastName
+    ) {
+        try {
+            Optional<Ticket> ticketOptional = ticketRepository.findByFirstNameAndLastName(firstName, lastName);
+
+            if (ticketOptional.isPresent()) {
+                Ticket ticket = ticketOptional.get();
+                Flight flight = ticket.getFlight();
+
+                Map<String, Object> ticketFlightInfo = new HashMap<>();
+                ticketFlightInfo.put("ticket", ticket);
+                ticketFlightInfo.put("flight", flight);
+
+                return ResponseEntity.status(HttpStatus.OK).body(ticketFlightInfo);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ticket not found for the given passenger");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching ticket details");
         }
     }
 
