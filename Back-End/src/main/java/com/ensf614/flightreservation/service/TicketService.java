@@ -21,7 +21,7 @@ import java.util.Optional;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
-    private final FlightRepository flightRepository; // Assuming you have a repository for flights
+    private final FlightRepository flightRepository;
 
     @Autowired
     public TicketService(TicketRepository ticketRepository, FlightRepository flightRepository) {
