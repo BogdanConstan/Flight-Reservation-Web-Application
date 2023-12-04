@@ -93,7 +93,6 @@ const FlightDetails = () => {
 
   return (
     <div>
-      <Header />
       <Container
         maxWidth="md"
         sx={{ my: 4, backgroundColor: "#f7f7f7", borderRadius: 2, p: 3 }}

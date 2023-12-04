@@ -2,7 +2,7 @@
 # Disable foreign key checks to avoid potential issues with table dependencies.
 SET FOREIGN_KEY_CHECKS = 0;
 
-Delete any existing data.
+# Delete any existing data.
 DROP TABLE IF EXISTS aircraft;
 DROP TABLE IF EXISTS crew;
 DROP TABLE IF EXISTS flight;
@@ -13,7 +13,8 @@ DROP TABLE IF EXISTS tickets;
 DROP TABLE IF EXISTS user;
 
 # Enable foreign key checks back.
-SET FOREIGN_KEY_CHECKS = 1; */
+SET FOREIGN_KEY_CHECKS = 1; 
+*/
 
 # NOTE: Need to run the back end (Spring) prior to running the following INSERTION commands.
 
@@ -1314,6 +1315,94 @@ VALUES
     ("Balkarn", "Gill", "bk@test.com", "bgill", "password"),
     ("Olayinka", "Afolabi", "oa@test.com", "oafolabi", "password")
 ;
+
+# Assign the flightid for each aircraft.
+UPDATE aircraft
+SET flightid =  1
+WHERE aircraftid = 1;
+
+UPDATE aircraft
+SET flightid =  2
+WHERE aircraftid = 2;
+
+UPDATE aircraft
+SET flightid =  3
+WHERE aircraftid = 3;
+
+UPDATE aircraft
+SET flightid =  4
+WHERE aircraftid = 4;
+
+UPDATE aircraft
+SET flightid =  5
+WHERE aircraftid = 5;
+
+UPDATE aircraft
+SET flightid =  6
+WHERE aircraftid = 6;
+
+UPDATE aircraft
+SET flightid =  7
+WHERE aircraftid = 7;
+
+UPDATE aircraft
+SET flightid =  8
+WHERE aircraftid = 8;
+
+UPDATE aircraft
+SET flightid =  9
+WHERE aircraftid = 9;
+
+UPDATE aircraft
+SET flightid =  10
+WHERE aircraftid = 10;
+
+# Assign the flightid for each crew.
+UPDATE crew
+SET flightid =  1
+WHERE crewid = 1;
+
+UPDATE crew
+SET flightid =  2
+WHERE crewid = 2;
+
+UPDATE crew
+SET flightid =  3
+WHERE crewid = 3;
+
+UPDATE crew
+SET flightid =  4
+WHERE crewid = 4;
+
+UPDATE crew
+SET flightid =  5
+WHERE crewid = 5;
+
+UPDATE crew
+SET flightid =  6
+WHERE crewid = 6;
+
+UPDATE crew
+SET flightid =  7
+WHERE crewid = 7;
+
+UPDATE crew
+SET flightid =  8
+WHERE crewid = 8;
+
+UPDATE crew
+SET flightid =  9
+WHERE crewid = 9;
+
+UPDATE crew
+SET flightid =  10
+WHERE crewid = 10;
+
+SELECT * FROM SEAT;
+SELECT * FROM flight;
+SELECT * FROM aircraft;
+SELECT * FROM crew;
+
 
     
     

@@ -67,6 +67,7 @@ function App() {
         {isLoggedIn && (
           <Route path="/promos" element={<Promos username={userFirstName} />} />
         )}{" "}
+        
         {/* Promos page */}
         <Route path="/payment" element={<Payment />} />
         <Route path="/confirmation" element={<Confirmation />} />

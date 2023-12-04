@@ -29,7 +29,6 @@ const FlightAttendantLoginPage = () => {
 
   return (
     <Box>
-      <Header />
 
       <Container maxWidth="sm" sx={{ mt: 8, mb: 6 }}>
         <Typography variant="h4" gutterBottom>

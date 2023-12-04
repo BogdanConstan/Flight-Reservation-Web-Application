@@ -50,7 +50,6 @@ const FlightSearch = () => {
 
   return (
     <div>
-      <Header />
       <Container maxWidth="md" sx={{ my: 4 }}>
         <Typography variant="h4" gutterBottom>
           Available Flights
