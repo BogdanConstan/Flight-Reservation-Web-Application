@@ -57,7 +57,16 @@ public class TicketController {
     public ResponseEntity<List<Ticket>> getPassengersByFlightId(@PathVariable Long flightId) {
         try {
             List<Ticket> tickets = ticketRepository.findByFlightId(flightId);
-            return ResponseEntity.ok(tickets);
+            
+            List<Ticket> savedTickets = new ArrayList<Ticket>();
+            
+            for (Ticket ticket: tickets) {
+            	if (ticket.isCanceled()) {
+            		savedTickets.add(ticket);
+            	}
+            }
+            
+            return ResponseEntity.ok(savedTickets);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
