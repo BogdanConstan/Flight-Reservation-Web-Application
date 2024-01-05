@@ -17,7 +17,9 @@ SET FOREIGN_KEY_CHECKS = 1;
 */
 
 # NOTE: Need to run the back end (Spring) prior to running the following INSERTION commands.
-
+DROP DATABASE IF EXISTS flight_reservation_system;
+CREATE DATABASE flight_reservation_system; 
+USE flight_reservation_system;
 # Add 10 aircrafts into the database.
 INSERT INTO aircraft (assigned, num_cols, num_rows)
 VALUES
